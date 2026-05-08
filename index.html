@@ -754,140 +754,82 @@
     })();
   </script>
 
-  <!-- n8n Integration -->
-  <script src="n8n-integration.js"></script>
+  <!-- Supabase Integration -->
   <script>
-    // Configurar n8n quando a página carregar
-    document.addEventListener('DOMContentLoaded', () => {
-      // Configurar webhook URL (você pode mudar aqui depois de ter n8n rodando)
-      const webhookUrl = localStorage.getItem('n8n_webhook_base_url') || '';
-      if (webhookUrl) {
-        n8nIntegration.configurarWebhook(webhookUrl);
-      }
-      
-      // Debug mode (mude para true para ver logs no console)
-      n8nIntegration.setDebug(false);
-    });
+    // ─── Configuração Supabase ───────────────────────────────────────────────
+    const SUPABASE_URL = 'https://qebukjatbszmuwoalzjx.supabase.co/rest/v1';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlYnVramF0YnN6bXV3b2Fsemp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODc2ODUsImV4cCI6MjA5Mzc2MzY4NX0.ZRgQ74fuGz0hJ1YmcyOFjnHGmuUn2dnBVq2__-_uslw';
 
-    // Integrar VIP Form com n8n
+    async function supabaseInsert(table, data) {
+      const response = await fetch(`${SUPABASE_URL}/${table}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err);
+      }
+      return true;
+    }
+    // ────────────────────────────────────────────────────────────────────────
+
+    // Integrar VIP Form com Supabase
     document.addEventListener('DOMContentLoaded', () => {
       const vipForm = document.getElementById('vipForm');
       if (vipForm) {
-        vipForm.addEventListener('submit', (e) => {
+        vipForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const formData = new FormData(vipForm);
           const nome = formData.get('nome');
           const whatsapp = formData.get('whatsapp');
-          const email = formData.get('email');
+          const email = formData.get('email') || null;
           const aniversario = formData.get('aniversario') || null;
-          const mesaAtual = getMesaAtual();
-          
-          // Enviar para n8n (com fallback para localStorage se não conseguir)
-          if (n8nIntegration.WEBHOOK_URL) {
-            n8nIntegration.novoVIP(nome, whatsapp, email, aniversario, mesaAtual,
-              (response) => {
-                console.log('✅ VIP enviado para n8n:', response);
-                document.getElementById('vipSuccess').style.display = 'block';
-                vipForm.reset();
-                setTimeout(() => { document.getElementById('vipSuccess').style.display = 'none'; }, 5000);
-              },
-              (error) => {
-                console.warn('⚠️ Falha n8n, salvando localmente:', error);
-                // Fallback: salvar no localStorage
-                const lead = {
-                  id: Date.now(),
-                  tipo: 'VIP',
-                  mesa: mesaAtual,
-                  nome, whatsapp, email, aniversario,
-                  data: new Date().toLocaleDateString('pt-BR'),
-                  status: 'Pendente (fila n8n)'
-                };
-                let leads = JSON.parse(localStorage.getItem('leads') || '[]');
-                leads.push(lead);
-                localStorage.setItem('leads', JSON.stringify(leads));
-                document.getElementById('vipSuccess').style.display = 'block';
-                vipForm.reset();
-              }
-            );
-          } else {
-            // Sem n8n: apenas localStorage
-            const lead = {
-              id: Date.now(),
-              tipo: 'VIP',
-              mesa: mesaAtual,
-              nome, whatsapp, email, aniversario,
-              data: new Date().toLocaleDateString('pt-BR'),
-              status: 'Novo'
-            };
-            let leads = JSON.parse(localStorage.getItem('leads') || '[]');
-            leads.push(lead);
-            localStorage.setItem('leads', JSON.stringify(leads));
+          try {
+            await supabaseInsert('lista_vip', { nome, whatsapp, email, aniversario });
+            console.log('✅ VIP cadastrado no Supabase');
             document.getElementById('vipSuccess').style.display = 'block';
             vipForm.reset();
             setTimeout(() => { document.getElementById('vipSuccess').style.display = 'none'; }, 5000);
+          } catch (err) {
+            console.error('Erro ao cadastrar VIP:', err);
+            alert('Erro ao enviar cadastro. Tente novamente.');
           }
         });
       }
     });
 
-    // Integrar Reserve Form com n8n
+    // Integrar Reserve Form com Supabase
     document.addEventListener('DOMContentLoaded', () => {
       const reserveForm = document.getElementById('reserveForm');
       if (reserveForm) {
-        reserveForm.addEventListener('submit', (e) => {
+        reserveForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const formData = new FormData(reserveForm);
           const nome = formData.get('nome');
           const whatsapp = formData.get('whatsapp');
-          const email = formData.get('email');
-          const tipoEvento = formData.get('tipo');
-          const pessoas = formData.get('pessoas');
-          const dataEvento = selectedDate + '/05/2026';
-          const observacoes = formData.get('obs') || '';
-          const mesaAtual = getMesaAtual();
-          
-          // Enviar para n8n
-          if (n8nIntegration.WEBHOOK_URL) {
-            n8nIntegration.novaReserva(nome, whatsapp, email, tipoEvento, pessoas, dataEvento, observacoes, mesaAtual,
-              (response) => {
-                console.log('✅ Reserva enviada para n8n:', response);
-                document.getElementById('reserveSuccess').style.display = 'block';
-                reserveForm.reset();
-                setTimeout(() => { document.getElementById('reserveSuccess').style.display = 'none'; }, 5000);
-              },
-              (error) => {
-                console.warn('⚠️ Falha n8n, salvando localmente:', error);
-                const lead = {
-                  id: Date.now(),
-                  tipo: 'Reserva',
-                  mesa: mesaAtual,
-                  nome, whatsapp, email, tipoEvento, pessoas, dataEvento, observacoes,
-                  data_cadastro: new Date().toLocaleDateString('pt-BR'),
-                  status: 'Pendente (fila n8n)'
-                };
-                let leads = JSON.parse(localStorage.getItem('leads') || '[]');
-                leads.push(lead);
-                localStorage.setItem('leads', JSON.stringify(leads));
-                document.getElementById('reserveSuccess').style.display = 'block';
-                reserveForm.reset();
-              }
-            );
-          } else {
-            // Sem n8n: apenas localStorage
-            const lead = {
-              id: Date.now(),
-              tipo: 'Reserva',
-              mesa: mesaAtual,
-              nome, whatsapp, email, tipoEvento, pessoas, dataEvento, observacoes,
-              data_cadastro: new Date().toLocaleDateString('pt-BR'),
-              status: 'Pendente'
-            };
-            let leads = JSON.parse(localStorage.getItem('leads') || '[]');
-            leads.push(lead);
-            localStorage.setItem('leads', JSON.stringify(leads));
+          const email = formData.get('email') || null;
+          const tipo_evento = formData.get('tipo');
+          const pessoas = parseInt(formData.get('pessoas'));
+          const observacoes = formData.get('obs') || null;
+          if (!selectedDate) { alert('Selecione uma data no calendário.'); return; }
+          const mm = '05';
+          const dd = String(selectedDate).padStart(2, '0');
+          const data_evento = `2026-${mm}-${dd}`;
+          try {
+            await supabaseInsert('reservas', { nome, whatsapp, email, tipo_evento, pessoas, data_evento, observacoes });
+            console.log('✅ Reserva cadastrada no Supabase');
             document.getElementById('reserveSuccess').style.display = 'block';
             reserveForm.reset();
             setTimeout(() => { document.getElementById('reserveSuccess').style.display = 'none'; }, 5000);
+          } catch (err) {
+            console.error('Erro ao enviar reserva:', err);
+            alert('Erro ao enviar reserva. Tente novamente.');
           }
         });
       }
