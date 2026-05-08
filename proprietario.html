@@ -1451,6 +1451,53 @@
     © 2026 Lata Velha Rock Bar. Todos os direitos reservados.
   </footer>
 
+  <!-- Supabase inline client -->
+  <script>
+    // ─── Cliente Supabase ────────────────────────────────────────────────────
+    const SUPABASE_URL = 'https://qebukjatbszmuwoalzjx.supabase.co/rest/v1';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFlYnVramF0YnN6bXV3b2Fsemp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODc2ODUsImV4cCI6MjA5Mzc2MzY4NX0.ZRgQ74fuGz0hJ1YmcyOFjnHGmuUn2dnBVq2__-_uslw';
+
+    const supabase = {
+      _headers() {
+        return {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        };
+      },
+      async select(table, query) {
+        const res = await fetch(`${SUPABASE_URL}/${table}?${query || ''}`, { headers: this._headers() });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      async insert(table, data) {
+        const res = await fetch(`${SUPABASE_URL}/${table}`, {
+          method: 'POST', headers: this._headers(), body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      async update(table, data, match) {
+        const params = Object.entries(match).map(([k,v]) => `${k}=eq.${v}`).join('&');
+        const res = await fetch(`${SUPABASE_URL}/${table}?${params}`, {
+          method: 'PATCH', headers: this._headers(), body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return res.json();
+      },
+      async delete(table, match) {
+        const params = Object.entries(match).map(([k,v]) => `${k}=eq.${v}`).join('&');
+        const res = await fetch(`${SUPABASE_URL}/${table}?${params}`, {
+          method: 'DELETE', headers: this._headers()
+        });
+        if (!res.ok) throw new Error(await res.text());
+        return true;
+      }
+    };
+    // ────────────────────────────────────────────────────────────────────────
+  </script>
+
   <script src="auth.js"></script>
   <script>
     // Protege a página
@@ -1461,197 +1508,190 @@
     document.getElementById('loginTime').textContent = new Date().toLocaleDateString('pt-BR');
 
     // ABAS
-    function mostrarAba(abaId) {
-      // Esconde todas as abas
-      document.querySelectorAll('.tab-content').forEach(el => {
-        el.classList.remove('active');
-      });
-      // Remove active de todos os botões
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active');
-      });
-      // Mostra a aba selecionada
+    function mostrarAba(abaId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.getElementById(abaId).classList.add('active');
-      // Ativa o botão
-      event.target.classList.add('active');
-      // Carrega os dados correspondentes
+      const evtBtn = btn || (event && event.target);
+      if (evtBtn) evtBtn.classList.add('active');
       if (abaId === 'indicadores') carregarIndicadores();
       else if (abaId === 'campanhas') { atualizarPublico(); atualizarStatusN8n(); }
-      else if (abaId === 'gerenciarCampanhas') carregarCampanhas();
+      else if (abaId === 'gerenciarCampanhas') { carregarCampanhas(); popularSelectCampanhas(); renderAgendamentos(); initSchedForm(); }
       else if (abaId === 'leads' || abaId === 'reservas') carregarLeads();
     }
 
-    // LEADS
-    function carregarLeads() {
-      const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-      
-      // Separa reservas e VIP
-      const reservas = leads.filter(l => l.tipo === 'Reserva');
-      const vips = leads.filter(l => l.tipo === 'VIP');
-
-      // Atualiza contadores (resumo)
-      document.getElementById('totalReservas').textContent = reservas.length;
-      document.getElementById('totalVIP').textContent = vips.length;
-      document.getElementById('totalLeads').textContent = leads.length;
-
-      // Popula tabela de reservas (resumo)
-      const tabelaReservas = document.getElementById('tabelaReservas');
-      if (reservas.length > 0) {
-        tabelaReservas.innerHTML = reservas.map(r => `
-          <tr>
-            <td>${r.data_evento}</td>
-            <td>${r.mesa ? 'Mesa ' + r.mesa : '-'}</td>
-            <td>${r.nome}</td>
-            <td>${r.pessoas}</td>
-            <td>${r.tipo_evento}</td>
-            <td>${r.whatsapp}</td>
-            <td>${r.data_cadastro}</td>
-          </tr>
-        `).join('');
-      } else {
-        tabelaReservas.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td></tr>';
+    // UTILITÁRIO — parseia aniversario em qualquer formato
+    function parsearAniversario(str) {
+      if (!str) return null;
+      const s = str.trim();
+      if (s.includes('-')) {
+        const p = s.split('T')[0].split('-');
+        if (p.length >= 3) return { mes: parseInt(p[1], 10), dia: parseInt(p[2], 10) };
       }
-
-      // Popula tabela de reservas completa
-      const tabelaReservasCompleta = document.getElementById('tabelaReservasCompleta');
-      if (reservas.length > 0) {
-        tabelaReservasCompleta.innerHTML = reservas.map(r => `
-          <tr>
-            <td>${r.data_evento}</td>
-            <td>${r.mesa ? 'Mesa ' + r.mesa : '-'}</td>
-            <td>${r.nome}</td>
-            <td>${r.pessoas}</td>
-            <td>${r.tipo_evento}</td>
-            <td>${r.whatsapp}</td>
-            <td>${r.data_cadastro}</td>
-          </tr>
-        `).join('');
-      } else {
-        tabelaReservasCompleta.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td></tr>';
+      if (s.includes('/')) {
+        const p = s.split('/');
+        return { mes: parseInt(p[1], 10), dia: parseInt(p[0], 10) };
       }
+      return null;
+    }
 
-      // PRÓXIMOS EVENTOS
-      const proximosEventos = document.getElementById('proximosEventos');
-      if (proximosEventos) {
-        const reservasOrdenadas = [...reservas]
-          .filter(r => r.data_evento)
-          .sort((a, b) => {
-            const [da, ma, aa] = a.data_evento.split('/');
-            const [db, mb, ab] = b.data_evento.split('/');
-            return new Date(aa, ma-1, da) - new Date(ab, mb-1, db);
-          })
-          .slice(0, 5);
-        if (reservasOrdenadas.length > 0) {
-          proximosEventos.innerHTML = reservasOrdenadas.map(r => {
-            const [dia, mes] = r.data_evento.split('/');
+    // Cache para indicadores
+    let _cachedVips = [], _cachedReservas = [];
+
+    // LEADS — lê do Supabase
+    async function carregarLeads() {
+      try {
+        const [vips, reservas] = await Promise.all([
+          supabase.select('lista_vip', 'order=created_at.desc'),
+          supabase.select('reservas', 'order=created_at.desc')
+        ]);
+
+        const totalLeads = vips.length + reservas.length;
+
+        document.getElementById('totalReservas').textContent = reservas.length;
+        document.getElementById('totalVIP').textContent = vips.length;
+        document.getElementById('totalLeads').textContent = totalLeads;
+
+        function fmtData(iso) {
+          if (!iso) return '-';
+          const [y, m, d] = iso.split('T')[0].split('-');
+          return `${d}/${m}/${y}`;
+        }
+        function fmtAniv(iso) {
+          if (!iso) return '—';
+          const [, m, d] = iso.split('-');
+          return `${d}/${m}`;
+        }
+
+        // Tabela de reservas (resumo)
+        const tabelaReservas = document.getElementById('tabelaReservas');
+        tabelaReservas.innerHTML = reservas.length > 0
+          ? reservas.map(r => `<tr>
+              <td>${fmtData(r.data_evento)}</td>
+              <td>-</td>
+              <td>${r.nome}</td>
+              <td>${r.pessoas}</td>
+              <td>${r.tipo_evento}</td>
+              <td>${r.whatsapp}</td>
+              <td>${fmtData(r.created_at)}</td>
+            </tr>`).join('')
+          : '<tr><td colspan="7" style="text-align:center;color:var(--muted);">Nenhuma reserva cadastrada</td></tr>';
+
+        // Tabela de reservas completa
+        const tabelaReservasCompleta = document.getElementById('tabelaReservasCompleta');
+        tabelaReservasCompleta.innerHTML = tabelaReservas.innerHTML;
+
+        // PRÓXIMOS EVENTOS
+        const proximosEventos = document.getElementById('proximosEventos');
+        if (proximosEventos) {
+          const hojeStr = new Date().toISOString().split('T')[0];
+          const ordenadas = [...reservas]
+            .filter(r => r.data_evento && r.data_evento >= hojeStr)
+            .sort((a, b) => new Date(a.data_evento) - new Date(b.data_evento))
+            .slice(0, 5);
+          if (ordenadas.length > 0) {
             const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
-            return `
-              <div class="event-item">
+            proximosEventos.innerHTML = ordenadas.map(r => {
+              const [, mm, dd] = r.data_evento.split('-');
+              return `<div class="event-item">
                 <div class="event-date-badge">
-                  <div class="day">${dia}</div>
-                  <div class="month">${meses[parseInt(mes)-1]}</div>
+                  <div class="day">${dd}</div>
+                  <div class="month">${meses[parseInt(mm)-1]}</div>
                 </div>
                 <div class="event-info">
                   <div class="event-name">${r.nome}</div>
                   <div class="event-meta">${r.tipo_evento} · ${r.pessoas} pessoas</div>
                 </div>
               </div>`;
-          }).join('');
-        } else {
-          proximosEventos.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma reserva futura</p>';
+            }).join('');
+          } else {
+            proximosEventos.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma reserva futura</p>';
+          }
         }
-      }
 
-      // ATIVIDADE RECENTE
-      const atividadeRecente = document.getElementById('atividadeRecente');
-      if (atividadeRecente) {
-        const recentes = [...leads]
-          .sort((a, b) => (b.id || 0) - (a.id || 0))
-          .slice(0, 6);
-        if (recentes.length > 0) {
-          atividadeRecente.innerHTML = recentes.map(l => `
-            <div class="activity-item">
-              <div class="activity-dot ${l.tipo === 'VIP' ? 'vip' : 'reserva'}"></div>
-              <div class="activity-info">
-                <div class="activity-name">${l.nome}</div>
-                <div class="activity-meta">${l.tipo === 'VIP' ? 'Entrou na Lista VIP' : 'Solicitou reserva · ' + (l.tipo_evento || '')}${l.mesa ? ' · Mesa ' + l.mesa : ''} · ${l.data || l.data_cadastro || ''}</div>
-              </div>
-            </div>`).join('');
-        } else {
-          atividadeRecente.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma atividade ainda</p>';
+        // ATIVIDADE RECENTE
+        const atividadeRecente = document.getElementById('atividadeRecente');
+        if (atividadeRecente) {
+          const todos = [
+            ...vips.map(v => ({ ...v, _tipo: 'VIP' })),
+            ...reservas.map(r => ({ ...r, _tipo: 'Reserva' }))
+          ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6);
+
+          atividadeRecente.innerHTML = todos.length > 0
+            ? todos.map(l => `<div class="activity-item">
+                <div class="activity-dot ${l._tipo === 'VIP' ? 'vip' : 'reserva'}"></div>
+                <div class="activity-info">
+                  <div class="activity-name">${l.nome}</div>
+                  <div class="activity-meta">${l._tipo === 'VIP' ? 'Entrou na Lista VIP' : 'Solicitou reserva · ' + (l.tipo_evento || '')} · ${fmtData(l.created_at)}</div>
+                </div>
+              </div>`).join('')
+            : '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma atividade ainda</p>';
         }
-      }
 
-      // Popula tabela de VIP
-      const tabelaVIP = document.getElementById('tabelaVIP');
-      if (vips.length > 0) {
-        tabelaVIP.innerHTML = vips.map(v => `
-          <tr>
-            <td>${v.nome}</td>
-            <td>${v.mesa ? 'Mesa ' + v.mesa : '-'}</td>
-            <td>${v.whatsapp}</td>
-            <td>${v.email || '—'}</td>
-            <td>${v.data}</td>
-            <td>${v.aniversario ? new Date(v.aniversario).toLocaleDateString('pt-BR', { month: '2-digit', day: '2-digit' }) : '—'}</td>
-          </tr>
-        `).join('');
-      } else {
-        tabelaVIP.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--muted);">Nenhuma inscrição VIP cadastrada</td></tr>';
+        // Tabela VIP
+        const tabelaVIP = document.getElementById('tabelaVIP');
+        tabelaVIP.innerHTML = vips.length > 0
+          ? vips.map(v => `<tr>
+              <td>${v.nome}</td>
+              <td>-</td>
+              <td>${v.whatsapp}</td>
+              <td>${v.email || '—'}</td>
+              <td>${fmtData(v.created_at)}</td>
+              <td>${fmtAniv(v.aniversario)}</td>
+            </tr>`).join('')
+          : '<tr><td colspan="6" style="text-align:center;color:var(--muted);">Nenhuma inscrição VIP cadastrada</td></tr>';
+
+        _cachedVips = vips;
+        _cachedReservas = reservas;
+        if (document.getElementById('indicadores')?.classList.contains('active')) {
+          carregarIndicadores();
+        }
+
+      } catch (err) {
+        console.error('Erro ao carregar leads:', err);
       }
     }
 
-    // CAMPANHAS
-    function carregarCampanhas() {
-      const campanhas = JSON.parse(localStorage.getItem('campanhas') || '[]');
+    // CAMPANHAS — lê do Supabase
+    async function carregarCampanhas() {
       const historico = document.getElementById('historicoCampanhas');
-      
-      if (campanhas.length === 0) {
-        historico.innerHTML = '<p style="text-align: center; color: var(--muted); padding: 20px;">Nenhuma campanha criada ainda</p>';
-        return;
+      try {
+        const campanhas = await supabase.select('campanhas', 'order=created_at.desc');
+        if (campanhas.length === 0) {
+          historico.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;">Nenhuma campanha criada ainda</p>';
+          return;
+        }
+        const todasConfirmacoes = JSON.parse(localStorage.getItem('confirmacoes') || '[]');
+        historico.innerHTML = campanhas.map(function(c) {
+          var confirmados = todasConfirmacoes.filter(function(x) { return String(x.cId) === String(c.id); });
+          var pct = c.total_leads_enviados > 0 ? Math.round((confirmados.length / c.total_leads_enviados) * 100) : 0;
+          var dataFmt = c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '-';
+          var confirmadosHtml = confirmados.length > 0
+            ? '<span style="color:var(--accent);">✅ ' + confirmados.length + ' confirmados' + (pct ? ' (' + pct + '%)' : '') + '</span>'
+            : '';
+          var statusClass = c.status === 'enviado' ? 'enviada' : 'rascunho';
+          return '<div class="campaign-item">'
+            + '<div class="campaign-header"><div>'
+            + '<div class="campaign-title">' + (c.titulo_interno || '') + '</div>'
+            + '<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">'
+            + '<span class="campaign-type">' + (c.tipo || '').toUpperCase() + '</span>'
+            + '</div></div>'
+            + '<button class="btn-delete btn-small" onclick="deletarCampanha(\'' + c.id + '\')">🗑️</button>'
+            + '</div>'
+            + '<div class="campaign-meta">'
+            + '<span>📅 ' + dataFmt + '</span>'
+            + '<span>👤 ' + (c.total_leads_enviados || 0) + ' enviados</span>'
+            + confirmadosHtml
+            + '</div>'
+            + '<div class="campaign-content">' + (c.conteudo || '') + '</div>'
+            + '<div class="campaign-actions" style="margin-top:10px;">'
+            + '<span class="status-' + statusClass + '">' + (c.status || 'rascunho') + '</span>'
+            + '</div></div>';
+        }).join('');
+      } catch (err) {
+        console.error('Erro ao carregar campanhas:', err);
+        historico.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;">Erro ao carregar campanhas.</p>';
       }
-
-      const publicoLabel = { todos: 'Todos', vip: 'Só VIP', reservas: 'Só Reservas', aniversariantes: 'Aniversariantes' };
-      const todasConfirmacoes = JSON.parse(localStorage.getItem('confirmacoes') || '[]');
-
-      const campanhasOrdenadas = [...campanhas].reverse();
-      historico.innerHTML = campanhasOrdenadas.map((c, idx) => {
-        const confirmados = todasConfirmacoes.filter(x => String(x.cId) === String(c.id));
-        const pct = c.leadsContados > 0 ? Math.round((confirmados.length / c.leadsContados) * 100) : 0;
-        return `
-        <div class="campaign-item">
-          <div class="campaign-header">
-            <div style="display:flex;align-items:flex-start;gap:12px;">
-              ${c.imagem ? `<img src="${c.imagem}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;flex-shrink:0;">` : ''}
-              <div>
-                <div class="campaign-title">${c.titulo}</div>
-                <div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">
-                  <span class="campaign-type">${c.tipo.toUpperCase()}</span>
-                  ${c.publico ? `<span class="campaign-type" style="background:rgba(167,139,250,0.15);color:#a78bfa;">👥 ${publicoLabel[c.publico] || c.publico}</span>` : ''}
-                  ${c.confirmacao ? `<span class="campaign-type" style="background:rgba(255,196,0,0.15);color:#ffc400;">🎯 Confirmação</span>` : ''}
-                </div>
-              </div>
-            </div>
-            <button class="btn-delete btn-small" onclick="deletarCampanha(${campanhas.length - 1 - idx})">🗑️</button>
-          </div>
-          <div class="campaign-meta">
-            <span>📅 ${c.data}</span>
-            <span>👤 ${c.leadsContados || 0} enviados</span>
-            ${c.confirmacao ? `<span style="color:var(--accent);">✅ ${confirmados.length} confirmados ${confirmados.length > 0 ? '(' + pct + '%)' : ''}</span>` : ''}
-          </div>
-          <div class="campaign-content">${c.conteudo}</div>
-          ${c.confirmacao && confirmados.length > 0 ? `
-          <div style="margin-top:10px;">
-            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;">Quem confirmou</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;">
-              ${confirmados.map(x => `<span style="background:rgba(34,242,122,0.1);border:1px solid rgba(34,242,122,0.25);color:var(--accent);padding:3px 10px;border-radius:999px;font-size:11px;">✅ ${x.nome} · ${x.hora || x.data}</span>`).join('')}
-            </div>
-          </div>` : ''}
-          <div class="campaign-actions" style="margin-top:10px;">
-            <span class="status-${c.status && c.status.includes('Enviada') ? 'enviada' : 'rascunho'}">${c.status}</span>
-          </div>
-        </div>`;
-      }).join('');
-
     }
 
     // GRÁFICO DE LINHA SVG
@@ -1724,18 +1764,27 @@
         </div>`;
     }
 
-    // INDICADORES
-    function carregarIndicadores() {
-      const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-      const campanhas = JSON.parse(localStorage.getItem('campanhas') || '[]');
+    // INDICADORES — usa cache do Supabase
+    async function carregarIndicadores() {
+      if (_cachedVips.length === 0 && _cachedReservas.length === 0) {
+        try {
+          const [vipsDB, reservasDB] = await Promise.all([
+            supabase.select('lista_vip', 'order=created_at.desc'),
+            supabase.select('reservas', 'order=created_at.desc')
+          ]);
+          _cachedVips = vipsDB;
+          _cachedReservas = reservasDB;
+        } catch (e) { console.error('Erro ao carregar dados para indicadores:', e); }
+      }
 
-      const vips = leads.filter(l => l.tipo === 'VIP');
-      const reservas = leads.filter(l => l.tipo === 'Reserva');
+      const vips = _cachedVips;
+      const reservas = _cachedReservas;
+      const totalLeads = vips.length + reservas.length;
 
       // 1. TAXA DE ENGAJAMENTO
-      const engajamento = leads.length > 0 ? Math.round((reservas.length / leads.length) * 100) : 0;
+      const engajamento = totalLeads > 0 ? Math.round((reservas.length / totalLeads) * 100) : 0;
       document.getElementById('kpiEngajamento').textContent = engajamento + '%';
-      document.getElementById('kpiEngajamentoDetail').textContent = `${reservas.length} de ${leads.length} convertidos para reserva`;
+      document.getElementById('kpiEngajamentoDetail').textContent = reservas.length + ' de ' + totalLeads + ' convertidos para reserva';
 
       // 2. CAPACIDADE PREVISTA
       const capacidade = reservas.reduce((sum, r) => sum + parseInt(r.pessoas || 0), 0);
@@ -1744,157 +1793,104 @@
       // 3. EVENTO MAIS POPULAR
       const eventosContagem = {};
       reservas.forEach(r => {
-        eventosContagem[r.tipo_evento] = (eventosContagem[r.tipo_evento] || 0) + 1;
+        if (r.tipo_evento) eventosContagem[r.tipo_evento] = (eventosContagem[r.tipo_evento] || 0) + 1;
       });
       const eventoPopular = Object.entries(eventosContagem).sort((a, b) => b[1] - a[1])[0];
-      if (eventoPopular) {
-        document.getElementById('kpiEventoPopular').textContent = eventoPopular[0];
-        document.getElementById('kpiEventoDetail').textContent = `${eventoPopular[1]} solicitações`;
-      } else {
-        document.getElementById('kpiEventoPopular').textContent = '—';
-        document.getElementById('kpiEventoDetail').textContent = '0 solicitações';
-      }
+      document.getElementById('kpiEventoPopular').textContent = eventoPopular ? eventoPopular[0] : '—';
+      document.getElementById('kpiEventoDetail').textContent = eventoPopular ? eventoPopular[1] + ' solicitações' : '0 solicitações';
 
       // 4. ANIVERSARIANTES DO MÊS
-      const mesAtual = new Date().getMonth();
+      const _hoje = new Date();
+      const mesAtual = _hoje.getMonth() + 1;
+      const diaAtual = _hoje.getDate();
       const aniversariantes = vips.filter(v => {
         if (!v.aniversario) return false;
-        const data = new Date(v.aniversario);
-        return data.getMonth() === mesAtual;
+        const p = parsearAniversario(v.aniversario);
+        return p && p.mes === mesAtual;
       });
       document.getElementById('kpiAniversariantes').textContent = aniversariantes.length;
 
       // 5. GRÁFICO DE EVOLUÇÃO DIÁRIA (últimos 14 dias)
-      const hoje = new Date();
       const evolucaoDados = [];
       for (let i = 13; i >= 0; i--) {
-        const d = new Date(hoje);
-        d.setDate(hoje.getDate() - i);
-        const label = d.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
-        const vipDia = vips.filter(v => (v.data || '').startsWith(label.replace('/', '/'))).length
-          || vips.filter(v => v.data === label).length;
-        const resDia = reservas.filter(r => (r.data_cadastro || '').startsWith(label.replace('/', '/'))).length
-          || reservas.filter(r => r.data_cadastro === label).length;
-        evolucaoDados.push({ label: label.slice(0, 5), vip: vipDia, reserva: resDia });
+        const d = new Date(_hoje);
+        d.setDate(_hoje.getDate() - i);
+        const ano = d.getFullYear();
+        const mes = String(d.getMonth() + 1).padStart(2, '0');
+        const dia = String(d.getDate()).padStart(2, '0');
+        const dataISO = `${ano}-${mes}-${dia}`;
+        const label = `${dia}/${mes}`;
+        const vipDia = vips.filter(v => (v.created_at || '').startsWith(dataISO)).length;
+        const resDia = reservas.filter(r => (r.created_at || '').startsWith(dataISO)).length;
+        evolucaoDados.push({ label, vip: vipDia, reserva: resDia });
       }
       renderLinhaChart(evolucaoDados, 'chartEvolucao');
 
-      // 7. GRÁFICO DE DISTRIBUIÇÃO DE EVENTOS
-      const chartEventos = document.getElementById('chartEventos');
-      if (Object.keys(eventosContagem).length > 0) {
-        const maxEventos = Math.max(...Object.values(eventosContagem));
-        chartEventos.innerHTML = Object.entries(eventosContagem).map(([evento, count]) => {
-          const altura = (count / maxEventos) * 100;
-          return `
-            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
-              <div class="chart-bar" style="height: ${altura}%;">
-                <div class="chart-tooltip">${count}</div>
-              </div>
-              <div class="chart-label">${evento}</div>
-            </div>
-          `;
+      // Função auxiliar — barras com altura em px
+      function renderBarChart(containerId, dados, labelKey, valueKey) {
+        const BAR_MAX_PX = 150;
+        const el = document.getElementById(containerId);
+        if (!dados || dados.length === 0) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:40px;">Sem dados</p>'; return; }
+        const maxVal = Math.max(...dados.map(d => d[valueKey]));
+        el.innerHTML = dados.map(d => {
+          const px = maxVal > 0 ? Math.max(8, Math.round((d[valueKey] / maxVal) * BAR_MAX_PX)) : 8;
+          return `<div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;flex:1;height:${BAR_MAX_PX + 30}px;">
+            <div style="font-size:10px;color:var(--accent);font-weight:700;margin-bottom:4px;">${d[valueKey]}</div>
+            <div style="width:100%;height:${px}px;background:linear-gradient(180deg,var(--accent),rgba(232,32,32,0.5));border-radius:6px 6px 0 0;min-height:8px;"></div>
+            <div style="font-size:9px;color:var(--muted);text-align:center;margin-top:6px;word-break:break-word;">${d[labelKey]}</div>
+          </div>`;
         }).join('');
-      } else {
-        chartEventos.innerHTML = '<p style="text-align: center; color: var(--muted); grid-column: 1 / -1; padding: 40px;">Sem reservas para análise</p>';
       }
 
-      // 8. GRÁFICO DE RESERVAS POR PERÍODO
+      // 7. DISTRIBUIÇÃO DE EVENTOS
+      const eventosArray = Object.entries(eventosContagem).map(([label, value]) => ({ label, value }));
+      renderBarChart('chartEventos', eventosArray, 'label', 'value');
+
+      // 8. RESERVAS POR PERÍODO
       const periodos = {};
       reservas.forEach(r => {
-        const periodo = r.data_evento ? r.data_evento.split('/')[0] : 'Sem data';
-        periodos[`Dia ${periodo}`] = (periodos[`Dia ${periodo}`] || 0) + 1;
+        if (!r.data_evento) return;
+        const partes = r.data_evento.split('T')[0].split('-');
+        const label = partes.length === 3 ? partes[2] + '/' + partes[1] : r.data_evento;
+        periodos[label] = (periodos[label] || 0) + 1;
       });
-
-      const chartPeriodo = document.getElementById('chartPeriodo');
-      if (Object.keys(periodos).length > 0) {
-        const maxPeriodo = Math.max(...Object.values(periodos));
-        chartPeriodo.innerHTML = Object.entries(periodos).map(([periodo, count]) => {
-          const altura = (count / maxPeriodo) * 100;
-          return `
-            <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
-              <div class="chart-bar" style="height: ${altura}%;">
-                <div class="chart-tooltip">${count}</div>
-              </div>
-              <div class="chart-label">${periodo.replace('Dia ', '')}</div>
-            </div>
-          `;
-        }).join('');
-      } else {
-        chartPeriodo.innerHTML = '<p style="text-align: center; color: var(--muted); grid-column: 1 / -1; padding: 40px;">Sem dados de reservas</p>';
-      }
+      const periodosOrdenados = Object.entries(periodos)
+        .sort((a, b) => { const [da,ma]=a[0].split('/'); const [db,mb]=b[0].split('/'); return new Date('2000-'+ma+'-'+da) - new Date('2000-'+mb+'-'+db); })
+        .map(([label, value]) => ({ label, value }));
+      renderBarChart('chartPeriodo', periodosOrdenados, 'label', 'value');
 
       // 9. LISTA DE ANIVERSARIANTES
+      const MESES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
       const listaAniversariantes = document.getElementById('listaAniversariantes');
       if (aniversariantes.length > 0) {
         listaAniversariantes.innerHTML = aniversariantes.map(v => {
-          const data = new Date(v.aniversario);
-          const dia = data.getDate();
-          const mes = data.toLocaleDateString('pt-BR', { month: 'long' });
-          return `
-            <div class="aniversariante-item">
-              <div class="aniversariante-info">
-                <div class="aniversariante-nome">🎂 ${v.nome}</div>
-                <div class="aniversariante-data">${dia} de ${mes}</div>
-                <div class="aniversariante-whatsapp">${v.whatsapp}</div>
-              </div>
+          const p = parsearAniversario(v.aniversario);
+          const dia = p ? p.dia : '?';
+          const mesNome = p ? (MESES_NOME[p.mes - 1] || '') : '';
+          const ehHoje = p && (p.dia === diaAtual && p.mes === mesAtual);
+          return `<div class="aniversariante-item" style="${ehHoje ? 'border:1px solid var(--accent);background:rgba(232,32,32,0.07);border-radius:10px;padding:8px;' : ''}">
+            <div class="aniversariante-info">
+              <div class="aniversariante-nome">🎂 ${v.nome}${ehHoje ? ' <span style="color:var(--accent);font-size:11px;font-weight:700;">🎉 Hoje!</span>' : ''}</div>
+              <div class="aniversariante-data">${dia} de ${mesNome}</div>
+              <div class="aniversariante-whatsapp">${v.whatsapp}</div>
             </div>
-          `;
+          </div>`;
         }).join('');
       } else {
-        listaAniversariantes.innerHTML = '<p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum aniversariante neste mês</p>';
+        listaAniversariantes.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px;">Nenhum aniversariante neste mês</p>';
       }
 
       // 10. INSIGHTS DE NEGÓCIO
       const insightsNegocio = document.getElementById('insightsNegocio');
       const insights = [];
+      if (totalLeads > 0) insights.push({ titulo: '💡 Taxa de Conversão', texto: engajamento + '% dos leads se tornaram reservas. ' + (engajamento > 30 ? '✅ Excelente!' : engajamento > 10 ? '⚠️ Há potencial de melhora' : '🔴 Foco em converter mais leads') });
+      if (aniversariantes.length > 0) insights.push({ titulo: '🎂 Oportunidade de Engajamento', texto: aniversariantes.length + ' aniversariante(s) neste mês. Envie uma promoção especial!' });
+      if (reservas.length > 0) insights.push({ titulo: '👥 Tamanho Médio de Grupos', texto: Math.round(capacidade / reservas.length) + ' pessoas por reserva. Considere promoções para grupos maiores.' });
+      if (eventoPopular) insights.push({ titulo: '🎯 Tipo de Evento Mais Popular', texto: eventoPopular[0] + ' é o mais solicitado (' + eventoPopular[1] + ' reservas). Crie promoções especializadas.' });
 
-      if (leads.length > 0) {
-        insights.push({
-          titulo: '💡 Taxa de Conversão',
-          texto: `${engajamento}% dos leads se tornaram reservas. ${engajamento > 30 ? '✅ Excelente!' : engajamento > 10 ? '⚠️ Há potencial de melhora' : '🔴 Foco em converter mais leads'}`
-        });
-      }
-
-      if (aniversariantes.length > 0) {
-        insights.push({
-          titulo: '🎂 Oportunidade de Engajamento',
-          texto: `${aniversariantes.length} aniversariante(s) neste mês. Envie uma promoção especial!`
-        });
-      }
-
-      if (reservas.length > 0) {
-        const mediasPessoas = Math.round(capacidade / reservas.length);
-        insights.push({
-          titulo: '👥 Tamanho Médio de Grupos',
-          texto: `${mediasPessoas} pessoas por reserva. Considere promoções para grupos maiores.`
-        });
-      }
-
-      if (Object.keys(eventosContagem).length > 0) {
-        insights.push({
-          titulo: '🎯 Tipo de Evento Mais Popular',
-          texto: `${eventoPopular[0]} é o mais solicitado (${eventoPopular[1]} reservas). Aproveite para criar promoções especializadas.`
-        });
-      }
-
-      if (campanhas.filter(c => c.status === 'Enviada').length > 0) {
-        const campanhasEnviadas = campanhas.filter(c => c.status === 'Enviada').length;
-        insights.push({
-          titulo: '📢 Performance de Campanhas',
-          texto: `${campanhasEnviadas} campanha(s) enviada(s). Continue acompanhando a taxa de conversão.`
-        });
-      }
-
-      if (insights.length > 0) {
-        insightsNegocio.innerHTML = insights.map(i => `
-          <div class="insight-item">
-            <div class="insight-title">${i.titulo}</div>
-            <div class="insight-text">${i.texto}</div>
-          </div>
-        `).join('');
-      } else {
-        insightsNegocio.innerHTML = '<p style="text-align: center; color: var(--muted); padding: 20px;">Envie campanhas e receba leads para gerar insights</p>';
-      }
+      insightsNegocio.innerHTML = insights.length > 0
+        ? insights.map(i => `<div class="insight-item"><div class="insight-title">${i.titulo}</div><div class="insight-text">${i.texto}</div></div>`).join('')
+        : '<p style="text-align:center;color:var(--muted);padding:20px;">Receba leads para gerar insights</p>';
     }
 
     // ── IMAGEM ──────────────────────────────────────────────────────
@@ -1949,10 +1945,22 @@
 
     function atualizarPublico() {
       const publico = document.querySelector('[name="publico"]:checked')?.value || 'todos';
-      const leads = JSON.parse(localStorage.getItem('leads') || '[]');
-      const filtrado = filtrarPorPublico(leads, publico);
+      const mesAtual = new Date().getMonth() + 1;
+      let count = 0;
+      if (publico === 'vip') count = _cachedVips.length;
+      else if (publico === 'reservas') count = _cachedReservas.length;
+      else if (publico === 'aniversariantes') {
+        count = _cachedVips.filter(v => {
+          if (!v.aniversario) return false;
+          const p = v.aniversario.split('-');
+          return p.length >= 2 && parseInt(p[1], 10) === mesAtual;
+        }).length;
+      } else {
+        const seen = new Set();
+        [..._cachedVips, ..._cachedReservas].forEach(l => { if (!seen.has(l.whatsapp)) { seen.add(l.whatsapp); count++; } });
+      }
       const el = document.getElementById('audienceCount');
-      if (el) el.innerHTML = `<strong>${filtrado.length}</strong> contato${filtrado.length !== 1 ? 's' : ''} receberão esta campanha`;
+      if (el) el.innerHTML = `<strong>${count}</strong> contato${count !== 1 ? 's' : ''} receberão esta campanha`;
     }
 
     // ── PERSONALIZAÇÃO ───────────────────────────────────────────────
@@ -1994,57 +2002,36 @@
       }
     }
 
-    // ── CONFIGURAÇÃO N8N ─────────────────────────────────────────────
+    // ── INTEGRAÇÃO VIA SUPABASE (n8n é acionado pelo trigger da tabela) ────────
     function atualizarStatusN8n() {
       const badge = document.getElementById('n8nStatusBadge');
       if (!badge) return;
-      if (n8nIntegration.estaConfigurado()) {
-        badge.textContent = '✅ Configurado';
-        badge.style.cssText = 'font-size:12px;padding:4px 12px;border-radius:999px;font-weight:700;background:rgba(34,242,122,0.15);color:var(--accent);';
-      } else {
-        badge.textContent = '⚠️ Não configurado';
-        badge.style.cssText = 'font-size:12px;padding:4px 12px;border-radius:999px;font-weight:700;background:rgba(255,200,0,0.15);color:#ffc800;';
-      }
+      badge.textContent = '✅ Via Supabase';
+      badge.style.cssText = 'font-size:12px;padding:4px 12px;border-radius:999px;font-weight:700;background:rgba(232,32,32,0.15);color:var(--accent);';
     }
 
     function toggleN8nPanel() {
       const body = document.getElementById('n8nPanelBody');
-      const isOpen = body.style.display !== 'none';
-      body.style.display = isOpen ? 'none' : 'block';
-      if (!isOpen) {
-        document.getElementById('n8nWebhookInput').value = localStorage.getItem('n8n_webhook_url') || '';
-        document.getElementById('n8nApiKeyInput').value = localStorage.getItem('n8n_api_key') || '';
-      }
+      if (!body) return;
+      body.style.display = body.style.display === 'none' ? 'block' : 'none';
     }
 
     function salvarConfN8n() {
-      const url = document.getElementById('n8nWebhookInput').value.trim();
-      const key = document.getElementById('n8nApiKeyInput').value.trim();
-      n8nIntegration.configurarWebhook(url);
-      if (key) n8nIntegration.configurarAPIKey(key);
-      atualizarStatusN8n();
-      mostrarResultadoTeste('💾 Configuração salva!', true);
+      mostrarResultadoTeste('ℹ️ Integração agora via Supabase trigger — não é necessário configurar webhook aqui.', null);
     }
 
     async function testarN8n() {
-      if (!n8nIntegration.estaConfigurado()) {
-        mostrarResultadoTeste('⚠️ Salve a URL do webhook primeiro.', false);
-        return;
-      }
-      mostrarResultadoTeste('🔄 Testando conexão...', null);
-      n8nIntegration.enviarWebhook('ping', { source: 'showzap-test', timestamp: new Date().toISOString() },
-        () => mostrarResultadoTeste('✅ Conexão bem-sucedida! n8n está recebendo os dados.', true),
-        (e) => mostrarResultadoTeste(`❌ Falha: ${e.message}`, false)
-      );
+      mostrarResultadoTeste('ℹ️ O n8n é notificado automaticamente ao inserir campanhas no Supabase. Nenhuma config extra necessária.', null);
     }
 
     function mostrarResultadoTeste(msg, ok) {
       const el = document.getElementById('n8nTestResult');
+      if (!el) return;
       el.style.display = 'block';
       el.textContent = msg;
       el.style.background = ok === true ? 'rgba(34,242,122,0.1)' : ok === false ? 'rgba(255,100,100,0.1)' : 'rgba(255,255,255,0.05)';
       el.style.color = ok === true ? 'var(--accent)' : ok === false ? '#ff6464' : 'var(--muted)';
-      el.style.border = `1px solid ${ok === true ? 'rgba(34,242,122,0.3)' : ok === false ? 'rgba(255,100,100,0.3)' : 'rgba(255,255,255,0.08)'}`;
+      el.style.border = '1px solid rgba(255,255,255,0.08)';
     }
 
     // ── GERAR COM IA ─────────────────────────────────────────────────
@@ -2106,88 +2093,39 @@ Lata Velha Rock Bar 🍻`
       atualizarContador();
     }
 
-    function enviarCampanha() {
+    async function enviarCampanha() {
       const form = document.getElementById('formCampanha');
-      if (!form.checkValidity()) {
-        alert('Preencha todos os campos obrigatórios');
-        return;
-      }
-
-      const todosLeads = JSON.parse(localStorage.getItem('leads') || '[]');
+      if (!form.checkValidity()) { alert('Preencha todos os campos obrigatórios'); return; }
       const formData = new FormData(form);
-      const publico = formData.get('publico') || 'todos';
-      const leads = filtrarPorPublico(todosLeads, publico);
-
-      if (leads.length === 0) {
-        alert('Nenhum contato encontrado para o público selecionado.');
-        return;
-      }
-
       const titulo = formData.get('titulo');
       const tipo = formData.get('tipo');
       const conteudo = formData.get('conteudo');
-      const detalhes = formData.get('detalhes');
-      const comConfirmacao = !!formData.get('confirmacao');
-      const campaignId = Date.now();
-
-      const listaLeads = leads.map(l => {
-        const link = comConfirmacao ? gerarLinkConfirmacao(campaignId, l.whatsapp, l.nome) : '';
-        const msg = conteudo
-          .replace(/\{nome\}/g, l.nome || 'cliente')
-          .replace(/\{link\}/g, link);
-        return { nome: l.nome, whatsapp: l.whatsapp, email: l.email, tipo_lead: l.tipo, mensagem_personalizada: msg };
-      });
-
-      const buildCampanha = (status) => ({
-        id: campaignId, titulo, tipo, conteudo, detalhes,
-        publico, imagem: imagemBase64,
-        confirmacao: comConfirmacao,
-        status,
-        data: new Date().toLocaleDateString('pt-BR'),
-        leadsContados: leads.length
-      });
-
-      const salvarEResetar = (campanha, msg) => {
-        const campanhas = JSON.parse(localStorage.getItem('campanhas') || '[]');
-        campanhas.push(campanha);
-        localStorage.setItem('campanhas', JSON.stringify(campanhas));
-        alert(msg);
+      const detalhes = formData.get('detalhes') || null;
+      try {
+        await supabase.insert('campanhas', {
+          titulo_interno: titulo, tipo, conteudo, detalhes, status: 'enviado'
+        });
+        alert('✅ Campanha enviada! O n8n será notificado automaticamente pelo trigger do Supabase.');
         form.reset();
         removerImagem();
         atualizarPublico();
         atualizarContador();
         carregarCampanhas();
-      };
-
-      if (!n8nIntegration.estaConfigurado()) {
-        salvarEResetar(
-          buildCampanha('Rascunho'),
-          `💡 n8n não configurado.\nCampanha salva como rascunho para ${leads.length} contatos.\n\nVá em ⚙️ Configuração do n8n para configurar o webhook.`
-        );
-        return;
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao enviar campanha: ' + (err.message || ''));
       }
-
-      const mensagens = listaLeads.map(l => ({
-        whatsapp: l.whatsapp,
-        nome: l.nome,
-        mensagem: l.mensagem_personalizada,
-        imagem: imagemBase64 || null
-      }));
-
-      n8nIntegration.enviarCampanha(
-        { id: campaignId, titulo, tipo, publico, confirmacao: comConfirmacao },
-        mensagens,
-        () => salvarEResetar(buildCampanha('Enviada'), `✅ Campanha enviada para ${leads.length} contatos via n8n!`),
-        () => salvarEResetar(buildCampanha('Fila (n8n offline)'), `⚠️ n8n offline. Campanha salva em fila — será enviada quando reconectar.`)
-      );
     }
 
-    function deletarCampanha(idx) {
+    async function deletarCampanha(id) {
       if (confirm('Tem certeza que deseja deletar esta campanha?')) {
-        const campanhas = JSON.parse(localStorage.getItem('campanhas') || '[]');
-        campanhas.splice(idx, 1);
-        localStorage.setItem('campanhas', JSON.stringify(campanhas));
-        carregarCampanhas();
+        try {
+          await supabase.delete('campanhas', { id });
+          carregarCampanhas();
+        } catch (err) {
+          console.error('Erro ao deletar:', err);
+          alert('Erro ao deletar campanha.');
+        }
       }
     }
 
@@ -2239,64 +2177,139 @@ Lata Velha Rock Bar 🍻`
       }
     });
 
-    // Form submission (salvar rascunho)
-    document.getElementById('formCampanha').addEventListener('submit', (e) => {
+    // Form submission (salvar rascunho no Supabase)
+    document.getElementById('formCampanha').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      const campanhas = JSON.parse(localStorage.getItem('campanhas') || '[]');
-      campanhas.push({
-        id: Date.now(),
-        titulo: formData.get('titulo'),
-        tipo: formData.get('tipo'),
-        conteudo: formData.get('conteudo'),
-        detalhes: formData.get('detalhes'),
-        publico: formData.get('publico') || 'todos',
-        imagem: imagemBase64,
-        confirmacao: !!formData.get('confirmacao'),
-        status: 'Rascunho',
-        data: new Date().toLocaleDateString('pt-BR'),
-        leadsContados: filtrarPorPublico(JSON.parse(localStorage.getItem('leads') || '[]'), formData.get('publico') || 'todos').length
-      });
-      localStorage.setItem('campanhas', JSON.stringify(campanhas));
-      alert('✅ Campanha salva como rascunho!');
-      e.target.reset();
-      removerImagem();
-      atualizarPublico();
-      atualizarContador();
-      carregarCampanhas();
+      try {
+        await supabase.insert('campanhas', {
+          titulo_interno: formData.get('titulo'),
+          tipo: formData.get('tipo'),
+          conteudo: formData.get('conteudo'),
+          detalhes: formData.get('detalhes') || null,
+          status: 'rascunho'
+        });
+        alert('✅ Campanha salva como rascunho!');
+        e.target.reset();
+        removerImagem();
+        atualizarPublico();
+        atualizarContador();
+        carregarCampanhas();
+      } catch (err) {
+        console.error(err);
+        alert('Erro ao salvar campanha: ' + (err.message || ''));
+      }
     });
+
+    // ── AGENDAMENTO (Supabase: campanhas_agendadas) ───────────────────────
+    const PUBLICO_LABEL = { todos: 'Todos', vip: 'Só VIP', reservas: 'Só Reservas', aniversariantes: 'Aniversariantes' };
+
+    async function popularSelectCampanhas() {
+      const sel = document.getElementById('schedCampanha');
+      if (!sel) return;
+      try {
+        const campanhas = await supabase.select('campanhas', 'order=created_at.desc&select=id,titulo_interno,tipo');
+        sel.innerHTML = campanhas.length === 0
+          ? '<option value="">Nenhuma campanha salva ainda</option>'
+          : '<option value="">Selecione uma campanha...</option>' + campanhas.map(c => `<option value="${c.id}">${c.titulo_interno || 'Sem título'} [${(c.tipo||'').toUpperCase()}]</option>`).join('');
+      } catch (e) { sel.innerHTML = '<option value="">Erro ao carregar campanhas</option>'; }
+    }
+
+    function contarPublicoSched() {
+      const publico = (document.querySelector('[name="schedPublico"]:checked') || {}).value || 'todos';
+      const mesAtual = new Date().getMonth() + 1;
+      if (publico === 'vip') return _cachedVips.length;
+      if (publico === 'reservas') return _cachedReservas.length;
+      if (publico === 'aniversariantes') return _cachedVips.filter(v => { const p = parsearAniversario(v.aniversario); return p && p.mes === mesAtual; }).length;
+      const seen = new Set(); let total = 0;
+      _cachedVips.concat(_cachedReservas).forEach(l => { if (!seen.has(l.whatsapp)) { seen.add(l.whatsapp); total++; } });
+      return total;
+    }
+
+    function atualizarContadorSched() {
+      const count = contarPublicoSched();
+      const el = document.getElementById('schedCount');
+      if (el) el.innerHTML = '<strong>' + count + '</strong> contato' + (count !== 1 ? 's' : '') + ' receberão esta campanha';
+    }
+
+    async function agendarEnvio() {
+      const campanhaId = document.getElementById('schedCampanha').value;
+      if (!campanhaId) { alert('Selecione uma campanha.'); return; }
+      const data = document.getElementById('schedData').value;
+      const hora = document.getElementById('schedHora').value;
+      if (!data) { alert('Selecione a data de envio.'); return; }
+      if (!hora) { alert('Selecione o horário de envio.'); return; }
+      const dataHora = new Date(data + 'T' + hora);
+      if (dataHora <= new Date()) { alert('A data e horário precisam ser no futuro.'); return; }
+      const publico = (document.querySelector('[name="schedPublico"]:checked') || {}).value || 'todos';
+      const totalLeads = contarPublicoSched();
+      const btn = document.getElementById('schedBtn');
+      btn.disabled = true; btn.textContent = 'Salvando...';
+      try {
+        await supabase.insert('campanhas_agendadas', {
+          campanha_id: parseInt(campanhaId), publico, total_leads: totalLeads,
+          data_envio: dataHora.toISOString(), status: 'agendado'
+        });
+        alert('✅ Agendamento salvo!\n\nData: ' + dataHora.toLocaleDateString('pt-BR') + ' às ' + hora + '\nPúblico: ' + (PUBLICO_LABEL[publico] || publico) + '\nDestinatários: ' + totalLeads);
+        document.getElementById('schedCampanha').value = '';
+        document.getElementById('schedData').value = '';
+        renderAgendamentos();
+      } catch (err) {
+        alert('Erro ao salvar agendamento: ' + (err.message || ''));
+      } finally { btn.disabled = false; btn.textContent = 'Agendar Envio'; }
+    }
+
+    async function cancelarAgendamento(id) {
+      if (!confirm('Cancelar este agendamento?')) return;
+      try {
+        await supabase.update('campanhas_agendadas', { status: 'cancelado' }, { id });
+        renderAgendamentos();
+      } catch (err) { alert('Erro ao cancelar: ' + (err.message || '')); }
+    }
+
+    async function renderAgendamentos() {
+      const el = document.getElementById('listaAgendamentos');
+      if (!el) return;
+      el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:16px 0;">Carregando...</p>';
+      try {
+        const lista = await supabase.select('campanhas_agendadas', 'order=data_envio.asc&select=id,campanha_id,publico,total_leads,data_envio,status,created_at,campanhas(titulo_interno)');
+        if (lista.length === 0) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhum agendamento ainda.</p>'; return; }
+        el.innerHTML = lista.map(a => {
+          const dt = new Date(a.data_envio);
+          const dtFmt = dt.toLocaleDateString('pt-BR') + ' às ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          const titulo = (a.campanhas && a.campanhas.titulo_interno) ? a.campanhas.titulo_interno : 'Campanha #' + a.campanha_id;
+          const badgeEmoji = a.status === 'enviado' ? 'Enviado' : a.status === 'cancelado' ? 'Cancelado' : 'Agendado';
+          const badgeColor = a.status === 'enviado' ? 'rgba(232,32,32,0.2)' : a.status === 'cancelado' ? 'rgba(255,100,100,0.15)' : 'rgba(255,200,0,0.15)';
+          const delBtn = a.status === 'agendado' ? `<button style="background:rgba(255,100,100,0.15);color:#ff6464;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;" onclick="cancelarAgendamento('${a.id}')">Cancelar</button>` : '';
+          return `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-weight:600;font-size:13px;">${titulo}</div>
+              <div style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;">
+                <span>📅 ${dtFmt}</span><span>👥 ${PUBLICO_LABEL[a.publico] || a.publico}</span><span>📨 ${a.total_leads || 0} destinatários</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span style="background:${badgeColor};color:var(--accent);padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;">${badgeEmoji}</span>
+              ${delBtn}
+            </div>
+          </div>`;
+        }).join('');
+      } catch (err) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:16px 0;">Erro ao carregar agendamentos.</p>'; }
+    }
+
+    function initSchedForm() {
+      const inp = document.getElementById('schedData');
+      if (inp) inp.min = new Date().toISOString().split('T')[0];
+      atualizarContadorSched();
+    }
 
     // Carrega dados ao abrir a página
     carregarLeads();
 
-    // Atualiza a cada 5 segundos
-    setInterval(carregarLeads, 5000);
-
-    // Carrega indicadores se a aba estiver aberta
-    const abaIndicadores = document.getElementById('indicadores');
-    if (abaIndicadores && abaIndicadores.classList.contains('active')) {
-      carregarIndicadores();
-    }
+    // Atualiza a cada 30 segundos
+    setInterval(carregarLeads, 30000);
   </script>
 
-  <!-- n8n Integration -->
-  <script src="n8n-integration.js"></script>
-  <script>
-    // Configurar n8n quando a página carregar
-    document.addEventListener('DOMContentLoaded', () => {
-      // Configurar webhook URL (você pode mudar aqui depois de ter n8n rodando)
-      const webhookUrl = localStorage.getItem('n8n_webhook_base_url') || '';
-      if (webhookUrl) {
-        n8nIntegration.configurarWebhook(webhookUrl);
-      }
-      
-      // Debug mode (mude para true para ver logs no console)
-      n8nIntegration.setDebug(false);
-      
-      console.log('✅ n8n Integration carregado no proprietario.html');
-      console.log('Stats:', n8nIntegration.obterStats());
-    });
-  </script>
 </body>
 </html>
 
