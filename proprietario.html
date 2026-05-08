@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -28,8 +29,8 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background: radial-gradient(circle at top left, rgba(232, 32, 32, 0.09), transparent 26%),
-                  radial-gradient(circle at right center, rgba(232, 32, 32, 0.06), transparent 20%),
-                  var(--bg);
+        radial-gradient(circle at right center, rgba(232, 32, 32, 0.06), transparent 20%),
+        var(--bg);
       color: var(--text);
       font-size: 16px;
       line-height: 1.5;
@@ -114,7 +115,7 @@
       font-size: 24px;
     }
 
-    .header-proprietario > div:first-child p {
+    .header-proprietario>div:first-child p {
       color: var(--muted);
       margin: 4px 0 0;
       font-size: 13px;
@@ -278,14 +279,16 @@
       align-items: center;
       gap: 12px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .event-item:last-child { border-bottom: none; }
+    .event-item:last-child {
+      border-bottom: none;
+    }
 
     .event-date-badge {
-      background: rgba(34,242,122,0.12);
-      border: 1px solid rgba(34,242,122,0.25);
+      background: rgba(34, 242, 122, 0.12);
+      border: 1px solid rgba(34, 242, 122, 0.25);
       border-radius: 8px;
       padding: 6px 10px;
       text-align: center;
@@ -323,10 +326,12 @@
       align-items: flex-start;
       gap: 10px;
       padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
 
-    .activity-item:last-child { border-bottom: none; }
+    .activity-item:last-child {
+      border-bottom: none;
+    }
 
     .activity-dot {
       width: 8px;
@@ -336,8 +341,13 @@
       flex-shrink: 0;
     }
 
-    .activity-dot.vip { background: var(--accent); }
-    .activity-dot.reserva { background: #a78bfa; }
+    .activity-dot.vip {
+      background: var(--accent);
+    }
+
+    .activity-dot.reserva {
+      background: #a78bfa;
+    }
 
     .activity-info .activity-name {
       font-size: 13px;
@@ -393,19 +403,22 @@
 
     /* UPLOAD DE IMAGEM */
     .upload-zone {
-      border: 2px dashed rgba(255,255,255,0.15);
+      border: 2px dashed rgba(255, 255, 255, 0.15);
       border-radius: 12px;
       padding: 20px 16px;
       text-align: center;
       cursor: pointer;
       transition: 0.2s;
       position: relative;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
     }
-    .upload-zone:hover, .upload-zone.dragover {
+
+    .upload-zone:hover,
+    .upload-zone.dragover {
       border-color: var(--accent);
-      background: rgba(34,242,122,0.05);
+      background: rgba(34, 242, 122, 0.05);
     }
+
     .upload-zone input[type="file"] {
       position: absolute;
       inset: 0;
@@ -418,17 +431,39 @@
       padding: 0;
       min-height: unset;
     }
-    .upload-icon { font-size: 22px; margin-bottom: 6px; }
-    .upload-text { color: var(--muted); font-size: 12px; pointer-events: none; }
-    .img-preview-wrap { position: relative; display: inline-block; margin-top: 8px; }
-    .img-preview { max-height: 110px; border-radius: 8px; display: block; }
+
+    .upload-icon {
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .upload-text {
+      color: var(--muted);
+      font-size: 12px;
+      pointer-events: none;
+    }
+
+    .img-preview-wrap {
+      position: relative;
+      display: inline-block;
+      margin-top: 8px;
+    }
+
+    .img-preview {
+      max-height: 110px;
+      border-radius: 8px;
+      display: block;
+    }
+
     .img-remove {
       position: absolute;
-      top: -8px; right: -8px;
-      background: rgba(255,80,80,0.9);
+      top: -8px;
+      right: -8px;
+      background: rgba(255, 80, 80, 0.9);
       border: none;
       color: white;
-      width: 22px; height: 22px;
+      width: 22px;
+      height: 22px;
       border-radius: 50%;
       cursor: pointer;
       font-size: 12px;
@@ -438,11 +473,12 @@
 
     /* PÚBLICO-ALVO */
     .audience-section {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       padding: 14px;
     }
+
     .audience-label {
       font-size: 11px;
       font-weight: 700;
@@ -451,7 +487,13 @@
       letter-spacing: 0.06em;
       margin-bottom: 10px;
     }
-    .audience-options { display: flex; flex-wrap: wrap; gap: 8px; }
+
+    .audience-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .audience-opt {
       display: flex;
       align-items: center;
@@ -462,19 +504,22 @@
       text-transform: none;
       letter-spacing: 0;
       cursor: pointer;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       padding: 7px 12px;
       transition: 0.15s;
     }
+
     .audience-opt:has(input:checked) {
       border-color: var(--accent);
-      background: rgba(34,242,122,0.1);
+      background: rgba(34, 242, 122, 0.1);
       color: var(--accent);
     }
+
     .audience-opt input[type="radio"] {
-      width: 14px; height: 14px;
+      width: 14px;
+      height: 14px;
       min-height: unset;
       accent-color: var(--accent);
       cursor: pointer;
@@ -483,13 +528,32 @@
       background: none;
       padding: 0;
     }
-    .audience-count { margin-top: 10px; font-size: 11px; color: var(--muted); }
-    .audience-count strong { color: var(--accent); }
+
+    .audience-count {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .audience-count strong {
+      color: var(--accent);
+    }
 
     /* CONTADOR DE CARACTERES */
-    .char-counter { text-align: right; font-size: 10px; color: var(--muted); margin-top: 4px; }
-    .char-counter.warn { color: #ffc800; }
-    .char-counter.over { color: #ff6464; }
+    .char-counter {
+      text-align: right;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .char-counter.warn {
+      color: #ffc800;
+    }
+
+    .char-counter.over {
+      color: #ff6464;
+    }
 
     /* FORMULÁRIO DE CAMPANHA */
     .campaign-form {
@@ -994,7 +1058,13 @@
       gap: 14px;
       margin-top: 14px;
     }
-    @media (min-width: 640px) { .sched-grid { grid-template-columns: 1fr 1fr; } }
+
+    @media (min-width: 640px) {
+      .sched-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
     .sched-grid label {
       display: flex;
       flex-direction: column;
@@ -1005,10 +1075,11 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
     }
+
     .sched-grid input,
     .sched-grid select {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 8px;
       color: var(--text);
       font-family: inherit;
@@ -1017,10 +1088,23 @@
       min-height: 42px;
       transition: .15s;
     }
+
     .sched-grid input:focus,
-    .sched-grid select:focus { outline: none; border-color: var(--accent); }
-    .sched-grid select { background: #0f1211; }
-    .sched-publico { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sched-grid select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .sched-grid select {
+      background: #0f1211;
+    }
+
+    .sched-publico {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     .sched-publico label {
       flex-direction: row;
       align-items: center;
@@ -1030,38 +1114,64 @@
       font-size: 12px;
       font-weight: 500;
       color: var(--text);
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
       padding: 7px 12px;
       cursor: pointer;
       transition: .15s;
     }
+
     .sched-publico label:has(input:checked) {
       border-color: var(--accent);
-      background: rgba(232,32,32,0.1);
+      background: rgba(232, 32, 32, 0.1);
       color: var(--accent);
     }
+
     .sched-publico input[type="radio"] {
       accent-color: var(--accent);
-      width: 14px; height: 14px; min-height: unset; cursor: pointer;
+      width: 14px;
+      height: 14px;
+      min-height: unset;
+      cursor: pointer;
     }
-    .sched-count { font-size: 11px; color: var(--muted); margin-top: 6px; }
-    .sched-count strong { color: var(--accent); }
+
+    .sched-count {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .sched-count strong {
+      color: var(--accent);
+    }
+
     .sched-btn {
       grid-column: 1 / -1;
       background: linear-gradient(180deg, var(--accent), var(--accent-dark));
-      color: #fff; font-weight: 800; font-size: 13px;
-      border: none; border-radius: 10px; padding: 13px;
-      cursor: pointer; transition: .2s;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      cursor: pointer;
+      transition: .2s;
     }
-    .sched-btn:hover { filter: brightness(1.08); }
-    .sched-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    .sched-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    .sched-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
 
     /* LISTA DE AGENDAMENTOS */
     .agend-item {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       padding: 14px 16px;
       margin-bottom: 10px;
@@ -1071,21 +1181,62 @@
       gap: 12px;
       flex-wrap: wrap;
     }
-    .agend-info { flex: 1; min-width: 0; }
-    .agend-titulo { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-    .agend-meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px; }
-    .agend-badge {
-      font-size: 10px; font-weight: 700; padding: 3px 10px;
-      border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+
+    .agend-info {
+      flex: 1;
+      min-width: 0;
     }
-    .agend-badge.agendado  { background: rgba(255,200,0,0.15);  color: #ffc800; border: 1px solid rgba(255,200,0,0.25); }
-    .agend-badge.enviado   { background: rgba(232,32,32,0.15);  color: var(--accent); border: 1px solid rgba(232,32,32,0.3); }
-    .agend-badge.cancelado { background: rgba(255,100,100,0.12); color: #ff6464; border: 1px solid rgba(255,100,100,0.25); }
+
+    .agend-titulo {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .agend-meta {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .agend-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .agend-badge.agendado {
+      background: rgba(255, 200, 0, 0.15);
+      color: #ffc800;
+      border: 1px solid rgba(255, 200, 0, 0.25);
+    }
+
+    .agend-badge.enviado {
+      background: rgba(232, 32, 32, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(232, 32, 32, 0.3);
+    }
+
+    .agend-badge.cancelado {
+      background: rgba(255, 100, 100, 0.12);
+      color: #ff6464;
+      border: 1px solid rgba(255, 100, 100, 0.25);
+    }
+
     .agend-del {
-      background: rgba(255,100,100,0.12);
-      border: 1px solid rgba(255,100,100,0.25);
-      color: #ff6464; border-radius: 7px;
-      padding: 5px 10px; font-size: 11px; cursor: pointer; flex-shrink: 0;
+      background: rgba(255, 100, 100, 0.12);
+      border: 1px solid rgba(255, 100, 100, 0.25);
+      color: #ff6464;
+      border-radius: 7px;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
     @media (min-width: 640px) {
@@ -1134,11 +1285,13 @@
     }
   </style>
 </head>
+
 <body>
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <img src="logo.svg" alt="Lata Velha" class="brand-badge" style="width:44px;height:44px;border-radius:50%;cursor:pointer;user-select:none;">
+        <img src="logo.svg" alt="Lata Velha" class="brand-badge"
+          style="width:44px;height:44px;border-radius:50%;cursor:pointer;user-select:none;">
         <div>Lata Velha</div>
       </div>
       <nav class="nav-links">
@@ -1176,230 +1329,238 @@
       <!-- ABA: RESUMO -->
       <div id="resumo" class="tab-content active">
 
-      <div class="dashboard-grid">
-        <div class="dashboard-card">
-          <h3>📋</h3>
-          <div class="stat" id="totalReservas">0</div>
-          <p>Reservas cadastradas</p>
-        </div>
-        <div class="dashboard-card">
-          <h3>👥</h3>
-          <div class="stat" id="totalVIP">0</div>
-          <p>Inscrições VIP</p>
-        </div>
-        <div class="dashboard-card">
-          <h3>📊</h3>
-          <div class="stat" id="totalLeads">0</div>
-          <p>Total de leads</p>
-        </div>
-      </div>
-
-      <div class="section-proprietario">
-        <h2>📋 Reservas Solicitadas</h2>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Data do Evento</th>
-                <th>Mesa</th>
-                <th>Nome</th>
-                <th>Pessoas</th>
-                <th>Tipo de Evento</th>
-                <th>WhatsApp</th>
-                <th>Data de Cadastro</th>
-              </tr>
-            </thead>
-            <tbody id="tabelaReservas">
-              <tr>
-                <td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="resumo-bottom">
-        <div class="section-proprietario">
-          <h2>📅 Próximos Eventos</h2>
-          <div id="proximosEventos">
-            <p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma reserva futura</p>
+        <div class="dashboard-grid">
+          <div class="dashboard-card">
+            <h3>📋</h3>
+            <div class="stat" id="totalReservas">0</div>
+            <p>Reservas cadastradas</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>👥</h3>
+            <div class="stat" id="totalVIP">0</div>
+            <p>Inscrições VIP</p>
+          </div>
+          <div class="dashboard-card">
+            <h3>📊</h3>
+            <div class="stat" id="totalLeads">0</div>
+            <p>Total de leads</p>
           </div>
         </div>
+
         <div class="section-proprietario">
-          <h2>🕐 Atividade Recente</h2>
-          <div id="atividadeRecente">
-            <p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma atividade ainda</p>
+          <h2>📋 Reservas Solicitadas</h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data do Evento</th>
+                  <th>Mesa</th>
+                  <th>Nome</th>
+                  <th>Pessoas</th>
+                  <th>Tipo de Evento</th>
+                  <th>WhatsApp</th>
+                  <th>Data de Cadastro</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaReservas">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
+
+        <div class="resumo-bottom">
+          <div class="section-proprietario">
+            <h2>📅 Próximos Eventos</h2>
+            <div id="proximosEventos">
+              <p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma reserva futura</p>
+            </div>
+          </div>
+          <div class="section-proprietario">
+            <h2>🕐 Atividade Recente</h2>
+            <div id="atividadeRecente">
+              <p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhuma atividade ainda</p>
+            </div>
+          </div>
+        </div>
       </div><!-- FIM: ABA RESUMO -->
 
       <!-- ABA: INDICADORES -->
       <div id="indicadores" class="tab-content">
-      <div class="section-proprietario">
-        <h2>📈 Indicadores e Performance</h2>
-      </div>
-
-      <div class="kpi-grid">
-        <div class="kpi-card">
-          <div class="kpi-icon">📍</div>
-          <div class="kpi-info">
-            <div class="kpi-label">Taxa de Engajamento</div>
-            <div class="kpi-value" id="kpiEngajamento">0%</div>
-            <div class="kpi-detail" id="kpiEngajamentoDetail">0 de 0 convertidos</div>
-          </div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-icon">👥</div>
-          <div class="kpi-info">
-            <div class="kpi-label">Capacidade Prevista</div>
-            <div class="kpi-value" id="kpiCapacidade">0</div>
-            <div class="kpi-detail">pessoas em reservas</div>
-          </div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-icon">🎯</div>
-          <div class="kpi-info">
-            <div class="kpi-label">Evento Mais Popular</div>
-            <div class="kpi-value" id="kpiEventoPopular">—</div>
-            <div class="kpi-detail" id="kpiEventoDetail">0 solicitações</div>
-          </div>
-        </div>
-
-        <div class="kpi-card">
-          <div class="kpi-icon">🎂</div>
-          <div class="kpi-info">
-            <div class="kpi-label">Aniversariantes Este Mês</div>
-            <div class="kpi-value" id="kpiAniversariantes">0</div>
-            <div class="kpi-detail">oportunidades VIP</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-proprietario" style="margin-bottom:16px;">
-        <h3>📈 Evolução Diária de Cadastros</h3>
-        <div id="chartEvolucao" style="margin-top:12px;"></div>
-      </div>
-
-      <div class="indicators-grid">
         <div class="section-proprietario">
-          <h3>🎉 Distribuição de Eventos</h3>
-          <div class="chart-container" id="chartEventos"></div>
+          <h2>📈 Indicadores e Performance</h2>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-icon">📍</div>
+            <div class="kpi-info">
+              <div class="kpi-label">Taxa de Engajamento</div>
+              <div class="kpi-value" id="kpiEngajamento">0%</div>
+              <div class="kpi-detail" id="kpiEngajamentoDetail">0 de 0 convertidos</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">👥</div>
+            <div class="kpi-info">
+              <div class="kpi-label">Capacidade Prevista</div>
+              <div class="kpi-value" id="kpiCapacidade">0</div>
+              <div class="kpi-detail">pessoas em reservas</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">🎯</div>
+            <div class="kpi-info">
+              <div class="kpi-label">Evento Mais Popular</div>
+              <div class="kpi-value" id="kpiEventoPopular">—</div>
+              <div class="kpi-detail" id="kpiEventoDetail">0 solicitações</div>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-icon">🎂</div>
+            <div class="kpi-info">
+              <div class="kpi-label">Aniversariantes Este Mês</div>
+              <div class="kpi-value" id="kpiAniversariantes">0</div>
+              <div class="kpi-detail">oportunidades VIP</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-proprietario" style="margin-bottom:16px;">
+          <h3>📈 Evolução Diária de Cadastros</h3>
+          <div id="chartEvolucao" style="margin-top:12px;"></div>
+        </div>
+
+        <div class="indicators-grid">
+          <div class="section-proprietario">
+            <h3>🎉 Distribuição de Eventos</h3>
+            <div class="chart-container" id="chartEventos"></div>
+          </div>
+
+          <div class="section-proprietario">
+            <h3>📅 Reservas por Período</h3>
+            <div class="chart-container" id="chartPeriodo"></div>
+          </div>
         </div>
 
         <div class="section-proprietario">
-          <h3>📅 Reservas por Período</h3>
-          <div class="chart-container" id="chartPeriodo"></div>
+          <h3>🎂 Aniversariantes do Mês</h3>
+          <div id="listaAniversariantes" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+            <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum aniversariante no mês</p>
+          </div>
         </div>
-      </div>
 
-      <div class="section-proprietario">
-        <h3>🎂 Aniversariantes do Mês</h3>
-        <div id="listaAniversariantes" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-          <p style="text-align: center; color: var(--muted); padding: 20px;">Nenhum aniversariante no mês</p>
+        <div class="section-proprietario">
+          <h3>🏆 Insights de Negócio</h3>
+          <div id="insightsNegocio" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
+            <p style="text-align: center; color: var(--muted); padding: 20px;">Sem dados suficientes para gerar insights
+            </p>
+          </div>
         </div>
-      </div>
-
-      <div class="section-proprietario">
-        <h3>🏆 Insights de Negócio</h3>
-        <div id="insightsNegocio" style="display: grid; grid-template-columns: 1fr; gap: 12px;">
-          <p style="text-align: center; color: var(--muted); padding: 20px;">Sem dados suficientes para gerar insights</p>
-        </div>
-      </div>
       </div><!-- FIM: ABA INDICADORES -->
       <div id="leads" class="tab-content">
-      <div class="section-proprietario">
-        <h2>👥 Inscrições na Lista VIP</h2>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Nome</th>
-                <th>Mesa</th>
-                <th>WhatsApp</th>
-                <th>E-mail</th>
-                <th>Data de Inscrição</th>
-                <th>Aniversário</th>
-              </tr>
-            </thead>
-            <tbody id="tabelaVIP">
-              <tr>
-                <td colspan="6" style="text-align: center; color: var(--muted);">Nenhuma inscrição VIP cadastrada</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="section-proprietario">
+          <h2>👥 Inscrições na Lista VIP</h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Mesa</th>
+                  <th>WhatsApp</th>
+                  <th>E-mail</th>
+                  <th>Data de Inscrição</th>
+                  <th>Aniversário</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaVIP">
+                <tr>
+                  <td colspan="6" style="text-align: center; color: var(--muted);">Nenhuma inscrição VIP cadastrada</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
       </div><!-- FIM: ABA LEADS -->
 
       <!-- ABA: RESERVAS -->
       <div id="reservas" class="tab-content">
-      <div class="section-proprietario">
-        <h2>📋 Todas as Reservas</h2>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Data do Evento</th>
-                <th>Mesa</th>
-                <th>Nome</th>
-                <th>Pessoas</th>
-                <th>Tipo de Evento</th>
-                <th>WhatsApp</th>
-                <th>Data de Cadastro</th>
-              </tr>
-            </thead>
-            <tbody id="tabelaReservasCompleta">
-              <tr>
-                <td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="section-proprietario">
+          <h2>📋 Todas as Reservas</h2>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data do Evento</th>
+                  <th>Mesa</th>
+                  <th>Nome</th>
+                  <th>Pessoas</th>
+                  <th>Tipo de Evento</th>
+                  <th>WhatsApp</th>
+                  <th>Data de Cadastro</th>
+                </tr>
+              </thead>
+              <tbody id="tabelaReservasCompleta">
+                <tr>
+                  <td colspan="7" style="text-align: center; color: var(--muted);">Nenhuma reserva cadastrada</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
       </div><!-- FIM: ABA RESERVAS -->
 
       <!-- ABA: CRIAR CAMPANHA -->
       <div id="campanhas" class="tab-content">
 
-      <!-- CONFIGURAÇÃO N8N -->
-      <div class="section-proprietario" id="n8nConfigPanel" style="margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="toggleN8nPanel()">
-          <h2 style="margin:0;">⚙️ Configuração do n8n</h2>
-          <span id="n8nStatusBadge" style="font-size:12px;padding:4px 12px;border-radius:999px;font-weight:700;"></span>
-        </div>
-        <div id="n8nPanelBody" style="display:none;margin-top:16px;">
-          <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
-            Cole abaixo a URL do webhook do seu n8n. Todas as campanhas serão enviadas para esse endpoint com o payload completo (mensagens personalizadas, imagem, links de confirmação).
-          </p>
-          <div style="display:grid;gap:10px;">
-            <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">
-              Webhook URL
-              <input type="url" id="n8nWebhookInput" placeholder="https://seu-n8n.com/webhook/lata-velha-rock"
-                style="margin-top:6px;width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;">
-            </label>
-            <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">
-              API Key (opcional)
-              <input type="password" id="n8nApiKeyInput" placeholder="Chave de autenticação do webhook"
-                style="margin-top:6px;width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;">
-            </label>
-            <div style="display:flex;gap:8px;">
-              <button type="button" onclick="salvarConfN8n()"
-                style="background:var(--accent);color:#ffffff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;">
-                💾 Salvar
-              </button>
-              <button type="button" onclick="testarN8n()"
-                style="background:rgba(34,242,122,0.15);color:var(--accent);border:1px solid rgba(34,242,122,0.3);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;">
-                🔌 Testar conexão
-              </button>
-            </div>
-            <div id="n8nTestResult" style="font-size:12px;display:none;padding:10px;border-radius:8px;"></div>
+        <!-- CONFIGURAÇÃO N8N -->
+        <div class="section-proprietario" id="n8nConfigPanel" style="margin-bottom:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;"
+            onclick="toggleN8nPanel()">
+            <h2 style="margin:0;">⚙️ Configuração do n8n</h2>
+            <span id="n8nStatusBadge"
+              style="font-size:12px;padding:4px 12px;border-radius:999px;font-weight:700;"></span>
           </div>
-          <details style="margin-top:16px;">
-            <summary style="font-size:11px;color:var(--muted);cursor:pointer;font-weight:600;">📋 Ver formato do payload enviado</summary>
-            <pre style="margin-top:10px;background:rgba(0,0,0,0.3);border-radius:8px;padding:12px;font-size:10px;color:#b6b8b3;overflow-x:auto;line-height:1.5;">{
+          <div id="n8nPanelBody" style="display:none;margin-top:16px;">
+            <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+              Cole abaixo a URL do webhook do seu n8n. Todas as campanhas serão enviadas para esse endpoint com o
+              payload completo (mensagens personalizadas, imagem, links de confirmação).
+            </p>
+            <div style="display:grid;gap:10px;">
+              <label
+                style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">
+                Webhook URL
+                <input type="url" id="n8nWebhookInput" placeholder="https://seu-n8n.com/webhook/lata-velha-rock"
+                  style="margin-top:6px;width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;">
+              </label>
+              <label
+                style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">
+                API Key (opcional)
+                <input type="password" id="n8nApiKeyInput" placeholder="Chave de autenticação do webhook"
+                  style="margin-top:6px;width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;">
+              </label>
+              <div style="display:flex;gap:8px;">
+                <button type="button" onclick="salvarConfN8n()"
+                  style="background:var(--accent);color:#ffffff;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;">
+                  💾 Salvar
+                </button>
+                <button type="button" onclick="testarN8n()"
+                  style="background:rgba(34,242,122,0.15);color:var(--accent);border:1px solid rgba(34,242,122,0.3);padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:13px;">
+                  🔌 Testar conexão
+                </button>
+              </div>
+              <div id="n8nTestResult" style="font-size:12px;display:none;padding:10px;border-radius:8px;"></div>
+            </div>
+            <details style="margin-top:16px;">
+              <summary style="font-size:11px;color:var(--muted);cursor:pointer;font-weight:600;">📋 Ver formato do
+                payload enviado</summary>
+              <pre
+                style="margin-top:10px;background:rgba(0,0,0,0.3);border-radius:8px;padding:12px;font-size:10px;color:#b6b8b3;overflow-x:auto;line-height:1.5;">{
   "type": "campanha_whatsapp",
   "timestamp": "2026-04-20T16:00:00Z",
   "source": "showzap-lata-velha",
@@ -1422,140 +1583,160 @@
     ]
   }
 }</pre>
-          </details>
+            </details>
+          </div>
         </div>
-      </div>
 
-      <div class="section-proprietario">
-        <h2>📢 Nova Campanha</h2>
-        <form class="campaign-form" id="formCampanha">
-          <label>Título Interno
-            <input type="text" name="titulo" placeholder="Ex: Show de Sexta - Rock" required>
-          </label>
-          <label>Tipo de Campanha
-            <select name="tipo" required>
-              <option value="show">🎸 Show</option>
-              <option value="desconto">💰 Desconto</option>
-              <option value="promocao">🎉 Promoção</option>
-              <option value="evento">🎪 Evento</option>
-              <option value="vip">👑 Benefício VIP</option>
-              <option value="alerta">🔔 Alerta</option>
-            </select>
-          </label>
+        <div class="section-proprietario">
+          <h2>📢 Nova Campanha</h2>
+          <form class="campaign-form" id="formCampanha">
+            <label>Título Interno
+              <input type="text" name="titulo" placeholder="Ex: Show de Sexta - Rock" required>
+            </label>
+            <label>Tipo de Campanha
+              <select name="tipo" required>
+                <option value="show">🎸 Show</option>
+                <option value="desconto">💰 Desconto</option>
+                <option value="promocao">🎉 Promoção</option>
+                <option value="evento">🎪 Evento</option>
+                <option value="vip">👑 Benefício VIP</option>
+                <option value="alerta">🔔 Alerta</option>
+              </select>
+            </label>
 
-          <!-- IMAGEM -->
-          <div class="upload-zone" id="uploadZone" style="grid-column:1/-1;"
-               ondragover="event.preventDefault();this.classList.add('dragover')"
-               ondragleave="this.classList.remove('dragover')"
-               ondrop="handleDrop(event)">
-            <input type="file" id="imagemInput" accept="image/*" onchange="handleImagem(this)">
-            <div id="uploadContent">
-              <div class="upload-icon">🖼️</div>
-              <div class="upload-text">Clique ou arraste um flyer / foto do evento (máx. 5 MB)</div>
-            </div>
-          </div>
-
-          <!-- PÚBLICO-ALVO -->
-          <div class="audience-section" style="grid-column:1/-1;">
-            <div class="audience-label">Público-alvo</div>
-            <div class="audience-options">
-              <label class="audience-opt"><input type="radio" name="publico" value="todos" checked onchange="atualizarPublico()"> Todos</label>
-              <label class="audience-opt"><input type="radio" name="publico" value="vip" onchange="atualizarPublico()"> Só VIP</label>
-              <label class="audience-opt"><input type="radio" name="publico" value="reservas" onchange="atualizarPublico()"> Só Reservas</label>
-              <label class="audience-opt"><input type="radio" name="publico" value="aniversariantes" onchange="atualizarPublico()"> 🎂 Aniversariantes</label>
-            </div>
-            <div id="audienceCount" class="audience-count">—</div>
-          </div>
-
-          <label style="grid-column:1/-1;">Detalhes para IA
-            <textarea name="detalhes" placeholder="Ex: Show da banda X, sexta à noite, convite exclusivo para VIP..."></textarea>
-          </label>
-          <label style="grid-column:1/-1;">
-            <button type="button" onclick="gerarComIA()">✨ Gerar com IA</button>
-          </label>
-
-                <!-- CONFIRMAÇÃO DE PRESENÇA -->
-          <label class="audience-opt" style="grid-column:1/-1;border-radius:10px;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
-            <input type="checkbox" name="confirmacao" id="checkConfirmacao" onchange="toggleConfirmacao()"
-              style="width:16px;height:16px;min-height:unset;accent-color:var(--accent);cursor:pointer;flex-shrink:0;border:none;background:none;padding:0;">
-            <div>
-              <div style="font-size:13px;font-weight:600;color:var(--text);">🎯 Habilitar confirmação de presença</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:2px;">Gera um link único por contato para confirmar presença. Use <code style="color:var(--accent);">{link}</code> na mensagem.</div>
-            </div>
-          </label>
-
-          <div style="grid-column:1/-1;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Conteúdo da Mensagem</span>
-              <div style="display:flex;gap:6px;">
-                <button type="button" class="btn-small" onclick="inserirNome()" style="padding:4px 10px;font-size:10px;background:rgba(34,242,122,0.15);border:none;color:var(--accent);border-radius:6px;cursor:pointer;font-weight:700;">+ {nome}</button>
-                <button type="button" id="btnInserirLink" onclick="inserirLink()" style="display:none;padding:4px 10px;font-size:10px;background:rgba(167,139,250,0.15);border:none;color:#a78bfa;border-radius:6px;cursor:pointer;font-weight:700;">+ {link}</button>
+            <!-- IMAGEM -->
+            <div class="upload-zone" id="uploadZone" style="grid-column:1/-1;"
+              ondragover="event.preventDefault();this.classList.add('dragover')"
+              ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event)">
+              <input type="file" id="imagemInput" accept="image/*" onchange="handleImagem(this)">
+              <div id="uploadContent">
+                <div class="upload-icon">🖼️</div>
+                <div class="upload-text">Clique ou arraste um flyer / foto do evento (máx. 5 MB)</div>
               </div>
             </div>
-            <textarea name="conteudo" id="conteudoCampanha" placeholder="A mensagem será preenchida aqui..." required rows="6"
-              style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;resize:vertical;min-height:100px;"
-              oninput="atualizarContador()"></textarea>
-            <div class="char-counter" id="charCounter">0 / 1024</div>
-          </div>
 
-          <button type="submit">💾 Salvar Rascunho</button>
-          <button type="button" class="btn-secondary" onclick="enviarCampanha()">📤 Enviar para Contatos</button>
-          <button type="button" class="btn-secondary" onclick="abrirPreview()" style="grid-column:1/-1;">👁️ Pré-visualizar</button>
-        </form>
-      </div>
+            <!-- PÚBLICO-ALVO -->
+            <div class="audience-section" style="grid-column:1/-1;">
+              <div class="audience-label">Público-alvo</div>
+              <div class="audience-options">
+                <label class="audience-opt"><input type="radio" name="publico" value="todos" checked
+                    onchange="atualizarPublico()"> Todos</label>
+                <label class="audience-opt"><input type="radio" name="publico" value="vip"
+                    onchange="atualizarPublico()"> Só VIP</label>
+                <label class="audience-opt"><input type="radio" name="publico" value="reservas"
+                    onchange="atualizarPublico()"> Só Reservas</label>
+                <label class="audience-opt"><input type="radio" name="publico" value="aniversariantes"
+                    onchange="atualizarPublico()"> 🎂 Aniversariantes</label>
+              </div>
+              <div id="audienceCount" class="audience-count">—</div>
+            </div>
+
+            <label style="grid-column:1/-1;">Detalhes para IA
+              <textarea name="detalhes"
+                placeholder="Ex: Show da banda X, sexta à noite, convite exclusivo para VIP..."></textarea>
+            </label>
+            <label style="grid-column:1/-1;">
+              <button type="button" onclick="gerarComIA()">✨ Gerar com IA</button>
+            </label>
+
+            <!-- CONFIRMAÇÃO DE PRESENÇA -->
+            <label class="audience-opt"
+              style="grid-column:1/-1;border-radius:10px;padding:12px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);cursor:pointer;">
+              <input type="checkbox" name="confirmacao" id="checkConfirmacao" onchange="toggleConfirmacao()"
+                style="width:16px;height:16px;min-height:unset;accent-color:var(--accent);cursor:pointer;flex-shrink:0;border:none;background:none;padding:0;">
+              <div>
+                <div style="font-size:13px;font-weight:600;color:var(--text);">🎯 Habilitar confirmação de presença
+                </div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">Gera um link único por contato para
+                  confirmar presença. Use <code style="color:var(--accent);">{link}</code> na mensagem.</div>
+              </div>
+            </label>
+
+            <div style="grid-column:1/-1;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                <span
+                  style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Conteúdo
+                  da Mensagem</span>
+                <div style="display:flex;gap:6px;">
+                  <button type="button" class="btn-small" onclick="inserirNome()"
+                    style="padding:4px 10px;font-size:10px;background:rgba(34,242,122,0.15);border:none;color:var(--accent);border-radius:6px;cursor:pointer;font-weight:700;">+
+                    {nome}</button>
+                  <button type="button" id="btnInserirLink" onclick="inserirLink()"
+                    style="display:none;padding:4px 10px;font-size:10px;background:rgba(167,139,250,0.15);border:none;color:#a78bfa;border-radius:6px;cursor:pointer;font-weight:700;">+
+                    {link}</button>
+                </div>
+              </div>
+              <textarea name="conteudo" id="conteudoCampanha" placeholder="A mensagem será preenchida aqui..." required
+                rows="6"
+                style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);padding:10px;border-radius:8px;font-family:inherit;font-size:13px;resize:vertical;min-height:100px;"
+                oninput="atualizarContador()"></textarea>
+              <div class="char-counter" id="charCounter">0 / 1024</div>
+            </div>
+
+            <button type="submit">💾 Salvar Rascunho</button>
+            <button type="button" class="btn-secondary" onclick="enviarCampanha()">📤 Enviar para Contatos</button>
+            <button type="button" class="btn-secondary" onclick="abrirPreview()" style="grid-column:1/-1;">👁️
+              Pré-visualizar</button>
+          </form>
+        </div>
 
       </div><!-- FIM: ABA CRIAR CAMPANHA-->
 
       <!-- ABA: GERENCIAR CAMPANHAS -->
       <div id="gerenciarCampanhas" class="tab-content">
 
-      <!-- AGENDAR ENVIO -->
-      <div class="section-proprietario">
-        <h2>📅 Agendar Envio</h2>
-        <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">
-          Escolha uma campanha, o público-alvo, a data e o horário. O agendamento é salvo no Supabase e o n8n é notificado automaticamente no momento do envio.
-        </p>
-        <div class="sched-grid">
-          <label style="grid-column:1/-1;">Campanha
-            <select id="schedCampanha">
-              <option value="">Carregando...</option>
-            </select>
-          </label>
-          <label style="grid-column:1/-1;">Público-alvo
-            <div class="sched-publico">
-              <label><input type="radio" name="schedPublico" value="todos" checked onchange="atualizarContadorSched()"> Todos</label>
-              <label><input type="radio" name="schedPublico" value="vip" onchange="atualizarContadorSched()"> Só VIP</label>
-              <label><input type="radio" name="schedPublico" value="reservas" onchange="atualizarContadorSched()"> Só Reservas</label>
-              <label><input type="radio" name="schedPublico" value="aniversariantes" onchange="atualizarContadorSched()"> 🎂 Aniversariantes</label>
-            </div>
-            <div class="sched-count" id="schedCount">—</div>
-          </label>
-          <label>Data de Envio
-            <input type="date" id="schedData">
-          </label>
-          <label>Horário de Envio
-            <input type="time" id="schedHora" value="19:00">
-          </label>
-          <button class="sched-btn" id="schedBtn" onclick="agendarEnvio()">📤 Agendar Envio</button>
+        <!-- AGENDAR ENVIO -->
+        <div class="section-proprietario">
+          <h2>📅 Agendar Envio</h2>
+          <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">
+            Escolha uma campanha, o público-alvo, a data e o horário. O agendamento é salvo no Supabase e o n8n é
+            notificado automaticamente no momento do envio.
+          </p>
+          <div class="sched-grid">
+            <label style="grid-column:1/-1;">Campanha
+              <select id="schedCampanha">
+                <option value="">Carregando...</option>
+              </select>
+            </label>
+            <label style="grid-column:1/-1;">Público-alvo
+              <div class="sched-publico">
+                <label><input type="radio" name="schedPublico" value="todos" checked
+                    onchange="atualizarContadorSched()"> Todos</label>
+                <label><input type="radio" name="schedPublico" value="vip" onchange="atualizarContadorSched()"> Só
+                  VIP</label>
+                <label><input type="radio" name="schedPublico" value="reservas" onchange="atualizarContadorSched()"> Só
+                  Reservas</label>
+                <label><input type="radio" name="schedPublico" value="aniversariantes"
+                    onchange="atualizarContadorSched()"> 🎂 Aniversariantes</label>
+              </div>
+              <div class="sched-count" id="schedCount">—</div>
+            </label>
+            <label>Data de Envio
+              <input type="date" id="schedData">
+            </label>
+            <label>Horário de Envio
+              <input type="time" id="schedHora" value="19:00">
+            </label>
+            <button class="sched-btn" id="schedBtn" onclick="agendarEnvio()">📤 Agendar Envio</button>
+          </div>
         </div>
-      </div>
 
-      <!-- AGENDAMENTOS SALVOS -->
-      <div class="section-proprietario">
-        <h2>⏰ Agendamentos</h2>
-        <div id="listaAgendamentos">
-          <p style="text-align:center;color:var(--muted);padding:20px 0;">Carregando...</p>
+        <!-- AGENDAMENTOS SALVOS -->
+        <div class="section-proprietario">
+          <h2>⏰ Agendamentos</h2>
+          <div id="listaAgendamentos">
+            <p style="text-align:center;color:var(--muted);padding:20px 0;">Carregando...</p>
+          </div>
         </div>
-      </div>
 
-      <!-- HISTÓRICO DE CAMPANHAS -->
-      <div class="section-proprietario">
-        <h2>🗂️ Campanhas Salvas</h2>
-        <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
-          Acompanhe campanhas salvas e enviadas. Remova registros antigos quando necessário.
-        </p>
-        <div id="historicoCampanhas"></div>
-      </div>
+        <!-- HISTÓRICO DE CAMPANHAS -->
+        <div class="section-proprietario">
+          <h2>🗂️ Campanhas Salvas</h2>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+            Acompanhe campanhas salvas e enviadas. Remova registros antigos quando necessário.
+          </p>
+          <div id="historicoCampanhas"></div>
+        </div>
 
       </div><!-- FIM: ABA GERENCIAR CAMPANHAS-->
     </div>
@@ -1565,9 +1746,9 @@
   <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
       <button class="modal-close" onclick="fecharPreview()">✕</button>
-      
+
       <h2 style="text-align: center; margin-top: 0; color: var(--accent);">Pré-visualização da Mensagem</h2>
-      
+
       <div class="preview-phone">
         <div class="phone-screen">
           <div class="phone-header">📲</div>
@@ -1579,13 +1760,15 @@
       </div>
 
       <div class="preview-title">Como seus clientes verão no WhatsApp</div>
-      
+
       <div class="preview-info">
-        <strong>💡 Dica:</strong> Esta é uma prévia de como a mensagem será entregue. O conteúdo pode sofrer pequenas alterações dependendo do cliente WhatsApp/SMS utilizado.
+        <strong>💡 Dica:</strong> Esta é uma prévia de como a mensagem será entregue. O conteúdo pode sofrer pequenas
+        alterações dependendo do cliente WhatsApp/SMS utilizado.
       </div>
 
       <div style="display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 16px;">
-        <button class="btn-small" style="grid-column: 1 / -1; padding: 10px; font-size: 12px;" onclick="fecharPreview()">Fechar Pré-visualização</button>
+        <button class="btn-small" style="grid-column: 1 / -1; padding: 10px; font-size: 12px;"
+          onclick="fecharPreview()">Fechar Pré-visualização</button>
       </div>
     </div>
   </div>
@@ -1622,7 +1805,7 @@
         return res.json();
       },
       async update(table, data, match) {
-        const params = Object.entries(match).map(([k,v]) => `${k}=eq.${v}`).join('&');
+        const params = Object.entries(match).map(([k, v]) => `${k}=eq.${v}`).join('&');
         const res = await fetch(`${SUPABASE_URL}/${table}?${params}`, {
           method: 'PATCH', headers: this._headers(), body: JSON.stringify(data)
         });
@@ -1630,7 +1813,7 @@
         return res.json();
       },
       async delete(table, match) {
-        const params = Object.entries(match).map(([k,v]) => `${k}=eq.${v}`).join('&');
+        const params = Object.entries(match).map(([k, v]) => `${k}=eq.${v}`).join('&');
         const res = await fetch(`${SUPABASE_URL}/${table}?${params}`, {
           method: 'DELETE', headers: this._headers()
         });
@@ -1733,13 +1916,13 @@
             .sort((a, b) => new Date(a.data_evento) - new Date(b.data_evento))
             .slice(0, 5);
           if (ordenadas.length > 0) {
-            const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             proximosEventos.innerHTML = ordenadas.map(r => {
               const [, mm, dd] = r.data_evento.split('-');
               return `<div class="event-item">
                 <div class="event-date-badge">
                   <div class="day">${dd}</div>
-                  <div class="month">${meses[parseInt(mm)-1]}</div>
+                  <div class="month">${meses[parseInt(mm) - 1]}</div>
                 </div>
                 <div class="event-info">
                   <div class="event-name">${r.nome}</div>
@@ -1809,8 +1992,8 @@
           return;
         }
         const todasConfirmacoes = JSON.parse(localStorage.getItem('confirmacoes') || '[]');
-        historico.innerHTML = campanhas.map(function(c) {
-          var confirmados = todasConfirmacoes.filter(function(x) { return String(x.cId) === String(c.id); });
+        historico.innerHTML = campanhas.map(function (c) {
+          var confirmados = todasConfirmacoes.filter(function (x) { return String(x.cId) === String(c.id); });
           var pct = c.total_leads_enviados > 0 ? Math.round((confirmados.length / c.total_leads_enviados) * 100) : 0;
           var dataFmt = c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '-';
           var confirmadosHtml = confirmados.length > 0
@@ -1874,8 +2057,8 @@
       const polyVIP = dados.map((d, i) => `${gx(i)},${gy(d.vip)}`).join(' ');
       const polyRes = dados.map((d, i) => `${gx(i)},${gy(d.reserva)}`).join(' ');
 
-      const areaVIP = `${gx(0)},${gy(0)} ${polyVIP} ${gx(dados.length-1)},${gy(0)}`;
-      const areaRes = `${gx(0)},${gy(0)} ${polyRes} ${gx(dados.length-1)},${gy(0)}`;
+      const areaVIP = `${gx(0)},${gy(0)} ${polyVIP} ${gx(dados.length - 1)},${gy(0)}`;
+      const areaRes = `${gx(0)},${gy(0)} ${polyRes} ${gx(dados.length - 1)},${gy(0)}`;
 
       const dotsVIP = dados.map((d, i) => d.vip > 0
         ? `<circle cx="${gx(i)}" cy="${gy(d.vip)}" r="4" fill="#e82020" stroke="#070909" stroke-width="2"/>`
@@ -2002,12 +2185,12 @@
         periodos[label] = (periodos[label] || 0) + 1;
       });
       const periodosOrdenados = Object.entries(periodos)
-        .sort((a, b) => { const [da,ma]=a[0].split('/'); const [db,mb]=b[0].split('/'); return new Date('2000-'+ma+'-'+da) - new Date('2000-'+mb+'-'+db); })
+        .sort((a, b) => { const [da, ma] = a[0].split('/'); const [db, mb] = b[0].split('/'); return new Date('2000-' + ma + '-' + da) - new Date('2000-' + mb + '-' + db); })
         .map(([label, value]) => ({ label, value }));
       renderBarChart('chartPeriodo', periodosOrdenados, 'label', 'value');
 
       // 9. LISTA DE ANIVERSARIANTES
-      const MESES_NOME = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+      const MESES_NOME = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
       const listaAniversariantes = document.getElementById('listaAniversariantes');
       if (aniversariantes.length > 0) {
         listaAniversariantes.innerHTML = aniversariantes.map(v => {
@@ -2249,18 +2432,40 @@ Lata Velha Rock Bar 🍻`
       const conteudo = formData.get('conteudo');
       const detalhes = formData.get('detalhes') || null;
       try {
-        await supabase.insert('campanhas', {
-          titulo_interno: titulo, tipo, conteudo, detalhes, status: 'enviado'
+        await supabaseInsert('lista_vip', {
+          nome,
+          whatsapp,
+          email,
+          aniversario
         });
-        alert('✅ Campanha enviada! O n8n será notificado automaticamente pelo trigger do Supabase.');
-        form.reset();
-        removerImagem();
-        atualizarPublico();
-        atualizarContador();
-        carregarCampanhas();
+
+        console.log('✅ VIP cadastrado no Supabase');
+
+        document.getElementById('vipSuccess').innerHTML =
+          '✅ Cadastro enviado com sucesso! Você está na lista VIP.';
+
+        document.getElementById('vipSuccess').style.display = 'block';
+
+        vipForm.reset();
+
+        setTimeout(() => {
+          document.getElementById('vipSuccess').style.display = 'none';
+        }, 5000);
+
       } catch (err) {
-        console.error(err);
-        alert('Erro ao enviar campanha: ' + (err.message || ''));
+        console.error('Erro ao cadastrar VIP:', err);
+
+        const erro = String(err.message).toLowerCase();
+
+        if (
+          erro.includes('duplicate') ||
+          erro.includes('unique') ||
+          erro.includes('already exists')
+        ) {
+          alert('⚠️ Este WhatsApp ou e-mail já está cadastrado na Lista VIP.');
+        } else {
+          alert('Erro ao enviar cadastro. Tente novamente.');
+        }
       }
     }
 
@@ -2358,7 +2563,7 @@ Lata Velha Rock Bar 🍻`
         const campanhas = await supabase.select('campanhas', 'order=created_at.desc&select=id,titulo_interno,tipo');
         sel.innerHTML = campanhas.length === 0
           ? '<option value="">Nenhuma campanha salva ainda</option>'
-          : '<option value="">Selecione uma campanha...</option>' + campanhas.map(c => `<option value="${c.id}">${c.titulo_interno || 'Sem título'} [${(c.tipo||'').toUpperCase()}]</option>`).join('');
+          : '<option value="">Selecione uma campanha...</option>' + campanhas.map(c => `<option value="${c.id}">${c.titulo_interno || 'Sem título'} [${(c.tipo || '').toUpperCase()}]</option>`).join('');
       } catch (e) { sel.innerHTML = '<option value="">Erro ao carregar campanhas</option>'; }
     }
 
@@ -2467,7 +2672,5 @@ Lata Velha Rock Bar 🍻`
   </script>
 
 </body>
+
 </html>
-
-
-
