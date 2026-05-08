@@ -1515,7 +1515,7 @@
       const evtBtn = btn || (event && event.target);
       if (evtBtn) evtBtn.classList.add('active');
       if (abaId === 'indicadores') carregarIndicadores();
-      else if (abaId === 'campanhas') { atualizarPublico(); atualizarStatusN8n(); }
+      else if (abaId === 'campanhas') { carregarLeads().then(() => { atualizarPublico(); }); atualizarStatusN8n(); }
       else if (abaId === 'gerenciarCampanhas') { carregarCampanhas(); popularSelectCampanhas(); renderAgendamentos(); initSchedForm(); }
       else if (abaId === 'leads' || abaId === 'reservas') carregarLeads();
     }
@@ -1643,6 +1643,10 @@
 
         _cachedVips = vips;
         _cachedReservas = reservas;
+        // Atualiza o contador de público se a aba campanhas estiver aberta
+        if (document.getElementById('campanhas')?.classList.contains('active')) {
+          atualizarPublico();
+        }
         if (document.getElementById('indicadores')?.classList.contains('active')) {
           carregarIndicadores();
         }
