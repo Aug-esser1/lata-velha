@@ -987,6 +987,107 @@
       border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
+    /* AGENDAR ENVIO */
+    .sched-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+    @media (min-width: 640px) { .sched-grid { grid-template-columns: 1fr 1fr; } }
+    .sched-grid label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .sched-grid input,
+    .sched-grid select {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 10px 12px;
+      min-height: 42px;
+      transition: .15s;
+    }
+    .sched-grid input:focus,
+    .sched-grid select:focus { outline: none; border-color: var(--accent); }
+    .sched-grid select { background: #0f1211; }
+    .sched-publico { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sched-publico label {
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 7px 12px;
+      cursor: pointer;
+      transition: .15s;
+    }
+    .sched-publico label:has(input:checked) {
+      border-color: var(--accent);
+      background: rgba(232,32,32,0.1);
+      color: var(--accent);
+    }
+    .sched-publico input[type="radio"] {
+      accent-color: var(--accent);
+      width: 14px; height: 14px; min-height: unset; cursor: pointer;
+    }
+    .sched-count { font-size: 11px; color: var(--muted); margin-top: 6px; }
+    .sched-count strong { color: var(--accent); }
+    .sched-btn {
+      grid-column: 1 / -1;
+      background: linear-gradient(180deg, var(--accent), var(--accent-dark));
+      color: #fff; font-weight: 800; font-size: 13px;
+      border: none; border-radius: 10px; padding: 13px;
+      cursor: pointer; transition: .2s;
+    }
+    .sched-btn:hover { filter: brightness(1.08); }
+    .sched-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+    /* LISTA DE AGENDAMENTOS */
+    .agend-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .agend-info { flex: 1; min-width: 0; }
+    .agend-titulo { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+    .agend-meta { font-size: 11px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 10px; }
+    .agend-badge {
+      font-size: 10px; font-weight: 700; padding: 3px 10px;
+      border-radius: 999px; white-space: nowrap; flex-shrink: 0;
+    }
+    .agend-badge.agendado  { background: rgba(255,200,0,0.15);  color: #ffc800; border: 1px solid rgba(255,200,0,0.25); }
+    .agend-badge.enviado   { background: rgba(232,32,32,0.15);  color: var(--accent); border: 1px solid rgba(232,32,32,0.3); }
+    .agend-badge.cancelado { background: rgba(255,100,100,0.12); color: #ff6464; border: 1px solid rgba(255,100,100,0.25); }
+    .agend-del {
+      background: rgba(255,100,100,0.12);
+      border: 1px solid rgba(255,100,100,0.25);
+      color: #ff6464; border-radius: 7px;
+      padding: 5px 10px; font-size: 11px; cursor: pointer; flex-shrink: 0;
+    }
+
     @media (min-width: 640px) {
       .nav-inner {
         flex-direction: row;
@@ -1407,13 +1508,55 @@
 
       <!-- ABA: GERENCIAR CAMPANHAS -->
       <div id="gerenciarCampanhas" class="tab-content">
+
+      <!-- AGENDAR ENVIO -->
       <div class="section-proprietario">
-        <h2>🗂️ Gerenciar Campanhas</h2>
+        <h2>📅 Agendar Envio</h2>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;line-height:1.6;">
+          Escolha uma campanha, o público-alvo, a data e o horário. O agendamento é salvo no Supabase e o n8n é notificado automaticamente no momento do envio.
+        </p>
+        <div class="sched-grid">
+          <label style="grid-column:1/-1;">Campanha
+            <select id="schedCampanha">
+              <option value="">Carregando...</option>
+            </select>
+          </label>
+          <label style="grid-column:1/-1;">Público-alvo
+            <div class="sched-publico">
+              <label><input type="radio" name="schedPublico" value="todos" checked onchange="atualizarContadorSched()"> Todos</label>
+              <label><input type="radio" name="schedPublico" value="vip" onchange="atualizarContadorSched()"> Só VIP</label>
+              <label><input type="radio" name="schedPublico" value="reservas" onchange="atualizarContadorSched()"> Só Reservas</label>
+              <label><input type="radio" name="schedPublico" value="aniversariantes" onchange="atualizarContadorSched()"> 🎂 Aniversariantes</label>
+            </div>
+            <div class="sched-count" id="schedCount">—</div>
+          </label>
+          <label>Data de Envio
+            <input type="date" id="schedData">
+          </label>
+          <label>Horário de Envio
+            <input type="time" id="schedHora" value="19:00">
+          </label>
+          <button class="sched-btn" id="schedBtn" onclick="agendarEnvio()">📤 Agendar Envio</button>
+        </div>
+      </div>
+
+      <!-- AGENDAMENTOS SALVOS -->
+      <div class="section-proprietario">
+        <h2>⏰ Agendamentos</h2>
+        <div id="listaAgendamentos">
+          <p style="text-align:center;color:var(--muted);padding:20px 0;">Carregando...</p>
+        </div>
+      </div>
+
+      <!-- HISTÓRICO DE CAMPANHAS -->
+      <div class="section-proprietario">
+        <h2>🗂️ Campanhas Salvas</h2>
         <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
-          Acompanhe campanhas salvas, enviadas e em fila, veja confirmações de presença e remova registros antigos quando necessário.
+          Acompanhe campanhas salvas e enviadas. Remova registros antigos quando necessário.
         </p>
         <div id="historicoCampanhas"></div>
       </div>
+
       </div><!-- FIM: ABA GERENCIAR CAMPANHAS-->
     </div>
   </main>
@@ -2277,28 +2420,37 @@ Lata Velha Rock Bar 🍻`
       el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:16px 0;">Carregando...</p>';
       try {
         const lista = await supabase.select('campanhas_agendadas', 'order=data_envio.asc&select=id,campanha_id,publico,total_leads,data_envio,status,created_at,campanhas(titulo_interno)');
-        if (lista.length === 0) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhum agendamento ainda.</p>'; return; }
+        if (lista.length === 0) {
+          el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Nenhum agendamento ainda.</p>';
+          return;
+        }
         el.innerHTML = lista.map(a => {
           const dt = new Date(a.data_envio);
           const dtFmt = dt.toLocaleDateString('pt-BR') + ' às ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
           const titulo = (a.campanhas && a.campanhas.titulo_interno) ? a.campanhas.titulo_interno : 'Campanha #' + a.campanha_id;
-          const badgeEmoji = a.status === 'enviado' ? 'Enviado' : a.status === 'cancelado' ? 'Cancelado' : 'Agendado';
-          const badgeColor = a.status === 'enviado' ? 'rgba(232,32,32,0.2)' : a.status === 'cancelado' ? 'rgba(255,100,100,0.15)' : 'rgba(255,200,0,0.15)';
-          const delBtn = a.status === 'agendado' ? `<button style="background:rgba(255,100,100,0.15);color:#ff6464;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;" onclick="cancelarAgendamento('${a.id}')">Cancelar</button>` : '';
-          return `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
-            <div>
-              <div style="font-weight:600;font-size:13px;">${titulo}</div>
-              <div style="font-size:11px;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;">
-                <span>📅 ${dtFmt}</span><span>👥 ${PUBLICO_LABEL[a.publico] || a.publico}</span><span>📨 ${a.total_leads || 0} destinatários</span>
+          const pub = PUBLICO_LABEL[a.publico] || a.publico;
+          const badgeClass = a.status === 'enviado' ? 'enviado' : a.status === 'cancelado' ? 'cancelado' : 'agendado';
+          const badgeEmoji = a.status === 'enviado' ? '✅ Enviado' : a.status === 'cancelado' ? '❌ Cancelado' : '⏳ Agendado';
+          const delBtn = a.status === 'agendado'
+            ? `<button class="agend-del" onclick="cancelarAgendamento('${a.id}')">Cancelar</button>`
+            : '';
+          return `<div class="agend-item">
+            <div class="agend-info">
+              <div class="agend-titulo">${titulo}</div>
+              <div class="agend-meta">
+                <span>📅 ${dtFmt}</span>
+                <span>👥 ${pub}</span>
+                <span>📨 ${a.total_leads || 0} destinatários</span>
               </div>
             </div>
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span style="background:${badgeColor};color:var(--accent);padding:4px 10px;border-radius:999px;font-size:10px;font-weight:700;">${badgeEmoji}</span>
-              ${delBtn}
-            </div>
+            <span class="agend-badge ${badgeClass}">${badgeEmoji}</span>
+            ${delBtn}
           </div>`;
         }).join('');
-      } catch (err) { el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:16px 0;">Erro ao carregar agendamentos.</p>'; }
+      } catch (err) {
+        el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:16px 0;">Erro ao carregar agendamentos.</p>';
+        console.error(err);
+      }
     }
 
     function initSchedForm() {
