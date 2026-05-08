@@ -2466,22 +2466,50 @@ Lata Velha Rock Bar 🍻`
         document.getElementById('vipSuccess').innerHTML =
           '✅ Cadastro enviado com sucesso! Você está na lista VIP.';
 
-        document.getElementById('vipSuccess').style.display = 'block';
+        const vipMessage = document.getElementById('vipSuccess');
 
-        vipForm.reset();
+        vipMessage.innerHTML =
+          '✅ Cadastro enviado com sucesso! Você está na lista VIP.';
+
+        vipMessage.style.display = 'block';
+
+        vipMessage.style.background = 'rgba(232, 32, 32, 0.12)';
+        vipMessage.style.border = '1px solid rgba(232, 32, 32, 0.35)';
+        vipMessage.style.color = '#c8f7da';
 
         setTimeout(() => {
-          document.getElementById('vipSuccess').style.display = 'none';
+          vipMessage.style.display = 'none';
         }, 5000);
+
+        vipForm.reset();
 
       } catch (err) {
         console.error('Erro ao cadastrar VIP:', err);
 
+        const vipMessage = document.getElementById('vipSuccess');
+
+        vipMessage.style.display = 'block';
+
         if (err.message === 'USUARIO_DUPLICADO') {
-          alert('⚠️ Este WhatsApp ou e-mail já está cadastrado na Lista VIP.');
+          vipMessage.innerHTML =
+            '⚠️ Este WhatsApp ou e-mail já está cadastrado na Lista VIP.';
+
+          vipMessage.style.background = 'rgba(255, 140, 0, 0.12)';
+          vipMessage.style.border = '1px solid rgba(255, 140, 0, 0.4)';
+          vipMessage.style.color = '#ffd89b';
+
         } else {
-          alert('❌ Não foi possível realizar o cadastro.');
+          vipMessage.innerHTML =
+            '❌ Não foi possível realizar o cadastro.';
+
+          vipMessage.style.background = 'rgba(232, 32, 32, 0.12)';
+          vipMessage.style.border = '1px solid rgba(232, 32, 32, 0.35)';
+          vipMessage.style.color = '#ffb3b3';
         }
+
+        setTimeout(() => {
+          vipMessage.style.display = 'none';
+        }, 5000);
       }
     }
 
