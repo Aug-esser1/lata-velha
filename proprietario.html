@@ -2455,16 +2455,28 @@ Lata Velha Rock Bar 🍻`
       } catch (err) {
         console.error('Erro ao cadastrar VIP:', err);
 
-        const erro = String(err.message).toLowerCase();
+        let erroTexto = '';
 
+        try {
+          erroTexto =
+            typeof err.message === 'string'
+              ? err.message
+              : JSON.stringify(err);
+        } catch {
+          erroTexto = String(err);
+        }
+
+        erroTexto = erroTexto.toLowerCase();
+
+        // Detecta erro de duplicidade do Supabase/Postgres
         if (
-          erro.includes('duplicate') ||
-          erro.includes('unique') ||
-          erro.includes('already exists')
+          erroTexto.includes('duplicate key') ||
+          erroTexto.includes('unique constraint') ||
+          erroTexto.includes('23505')
         ) {
           alert('⚠️ Este WhatsApp ou e-mail já está cadastrado na Lista VIP.');
         } else {
-          alert('Erro ao enviar cadastro. Tente novamente.');
+          alert('❌ Não foi possível realizar o cadastro.');
         }
       }
     }
