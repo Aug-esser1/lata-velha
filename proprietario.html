@@ -1799,10 +1799,32 @@
       },
       async insert(table, data) {
         const res = await fetch(`${SUPABASE_URL}/${table}`, {
-          method: 'POST', headers: this._headers(), body: JSON.stringify(data)
+          method: 'POST',
+          headers: this._headers(),
+          body: JSON.stringify(data)
         });
-        if (!res.ok) throw new Error(await res.text());
-        return res.json();
+
+        const errorText = await res.text();
+
+        if (!res.ok) {
+          console.error('ERRO SUPABASE:', errorText);
+
+          if (
+            errorText.includes('23505') ||
+            errorText.toLowerCase().includes('duplicate') ||
+            errorText.toLowerCase().includes('unique')
+          ) {
+            throw new Error('USUARIO_DUPLICADO');
+          }
+
+          throw new Error(errorText);
+        }
+
+        try {
+          return JSON.parse(errorText);
+        } catch {
+          return errorText;
+        }
       },
       async update(table, data, match) {
         const params = Object.entries(match).map(([k, v]) => `${k}=eq.${v}`).join('&');
@@ -2455,25 +2477,7 @@ Lata Velha Rock Bar 🍻`
       } catch (err) {
         console.error('Erro ao cadastrar VIP:', err);
 
-        let erroTexto = '';
-
-        try {
-          erroTexto =
-            typeof err.message === 'string'
-              ? err.message
-              : JSON.stringify(err);
-        } catch {
-          erroTexto = String(err);
-        }
-
-        erroTexto = erroTexto.toLowerCase();
-
-        // Detecta erro de duplicidade do Supabase/Postgres
-        if (
-          erroTexto.includes('duplicate key') ||
-          erroTexto.includes('unique constraint') ||
-          erroTexto.includes('23505')
-        ) {
+        if (err.message === 'USUARIO_DUPLICADO') {
           alert('⚠️ Este WhatsApp ou e-mail já está cadastrado na Lista VIP.');
         } else {
           alert('❌ Não foi possível realizar o cadastro.');
